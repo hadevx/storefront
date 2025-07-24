@@ -9,12 +9,38 @@ const userApi = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
-    getUsers: builder.query({
-      query: ({ pageNumber }) => ({
+    registerUser: builder.mutation({
+      query: (data) => ({
         url: "/api/users",
-        params: {
-          pageNumber,
-        },
+        method: "POST",
+        body: data,
+      }),
+    }),
+    updateUser: builder.mutation({
+      query: (data) => ({
+        url: "/api/users/profile",
+        method: "PUT",
+        body: data,
+      }),
+    }),
+
+    createAddress: builder.mutation({
+      query: (data) => ({
+        url: "/api/users/address",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    getAddress: builder.query({
+      query: (userId) => ({
+        url: `/api/users/address/${userId}`,
+      }),
+    }),
+    updateAddress: builder.mutation({
+      query: (data) => ({
+        url: "/api/users/address",
+        method: "PUT",
+        body: data,
       }),
     }),
     getUserDetails: builder.query({
@@ -31,5 +57,14 @@ const userApi = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useLoginUserMutation, useGetUsersQuery, useGetUserDetailsQuery, useLogoutMutation } =
-  userApi;
+export const {
+  useLoginUserMutation,
+  useRegisterUserMutation,
+  /* useGetUsersQuery, */
+  useGetUserDetailsQuery,
+  useLogoutMutation,
+  useCreateAddressMutation,
+  useGetAddressQuery,
+  useUpdateUserMutation,
+  useUpdateAddressMutation,
+} = userApi;
