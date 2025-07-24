@@ -148,7 +148,11 @@ function Cart() {
               <p className="flex gap-2">
                 Shipping: <Truck strokeWidth={1} />
               </p>
-              <p>{deliveryStatus?.shippingFee.toFixed(3)} KD</p>
+              {deliveryStatus?.shippingFee ? (
+                <p>{deliveryStatus?.shippingFee.toFixed(3)} KD</p>
+              ) : (
+                <p>Free</p>
+              )}
             </div>
             <div className="flex justify-between W">
               <p className="flex gap-2">Expected delivery in:</p>
@@ -159,10 +163,9 @@ function Cart() {
             <div className="flex justify-between">
               <p>Total:</p>
               <p>
-                {(
-                  Number(cartItems.reduce((acc, item) => acc + item.price * item.qty, 0)) +
-                  Number(deliveryStatus?.shippingFee)
-                ).toFixed(3)}{" "}
+                {Number(cartItems.reduce((acc, item) => acc + item.price * item.qty, 0)) /* +
+                  Number(deliveryStatus?.shippingFee) */
+                  .toFixed(3)}{" "}
                 KD
               </p>
             </div>
