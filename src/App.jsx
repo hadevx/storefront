@@ -13,7 +13,6 @@ import Order from "./pages/order/Order";
 import ProductByCategory from "./pages/productByCategory/ProductByCategory";
 import { useGetStoreStatusQuery } from "./redux/queries/maintenanceApi";
 import Maintenance from "./components/Maintenance";
-import PracCSS from "./components/PracCSS";
 
 function App() {
   const userInfo = useSelector((state) => state.auth.userInfo);
