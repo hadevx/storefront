@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Login from "./pages/auth/Login";
-import Home from "./pages/home/Home";
+import Home from "./pages/home/Home.jsx";
 import Cart from "./pages/cart/Cart";
 import Register from "./pages/auth/Register";
 import Payment from "./pages/payment/Payment";
