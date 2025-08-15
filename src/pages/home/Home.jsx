@@ -3,15 +3,22 @@ import hero3 from "../../assets/images/hero3.jpg";
 import Layout from "../../Layout";
 import { ShoppingBag } from "lucide-react";
 import { motion } from "framer-motion";
-import { useGetProductsQuery, useGetLatestProductsQuery } from "../../redux/queries/productApi";
+import {
+  useGetProductsQuery,
+  useGetLatestProductsQuery,
+  useGetCategoriesTreeQuery,
+} from "../../redux/queries/productApi";
 import ProductCategorySection from "../../components/ProductCategorySection";
 import { Link } from "react-router-dom";
 import { useEffect, useRef } from "react";
+import Loader from "../../components/Loader";
 
 function Home() {
   //API get products
   /*   const { data: products, isLoading, error, refetch } = useGetProductsQuery();*/
   const { data: products, isLoading, error, refetch } = useGetLatestProductsQuery();
+  const { data: categoryTree } = useGetCategoriesTreeQuery();
+
   const prevStockRef = useRef([]);
   useEffect(() => {
     if (products) {
@@ -78,24 +85,29 @@ function Home() {
             </motion.div>
           </motion.div>
         </div>
-        <div id="products" className="px-2 py-10 lg:p-28">
+        <div id="products" className="px-2 py-10 lg:p-28 ">
           <h1 className="text-4xl font-semibold mb-10">Latest products:</h1>
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
-            variants={containerVariants}
-            className=" flex flex-wrap justify-start lg:items-center  gap-6  lg:gap-7 ">
-            {products?.map((product) => (
-              <motion.div
-                variants={itemVariants}
-                key={product._id}
-                className="w-[210px] md:min-w-[250px] flex-grow rounded-lg">
-                <Product product={product} />
-              </motion.div>
-            ))}
-          </motion.div>
+          {isLoading ? (
+            <Loader />
+          ) : (
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.3 }}
+              variants={containerVariants}
+              className=" flex flex-wrap justify-start lg:items-center  gap-6  lg:gap-7 ">
+              {products?.map((product) => (
+                <motion.div
+                  variants={itemVariants}
+                  key={product._id}
+                  className="w-[210px] md:min-w-[250px] flex-grow rounded-lg">
+                  <Product product={product} categoryTree={categoryTree} />
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
         </div>
+
         <ProductCategorySection />
       </Layout>
     </>

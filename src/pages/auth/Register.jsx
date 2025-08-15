@@ -7,14 +7,25 @@ import { toast } from "react-toastify";
 import Spinner from "../../components/Spinner";
 import Layout from "../../Layout";
 import { useRegisterUserMutation } from "../../redux/queries/userApi";
+import { registerUserSchema } from "../../schema/userSchema";
 
 function Register() {
   const [showPassword, setShowPassword] = useState(false);
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [form, setForm] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const { name, phone, email, password, confirmPassword } = form;
+
+  // Generic onChange handler
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -23,56 +34,46 @@ function Register() {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    const hasNumbers = /\d/;
+
+    const result = registerUserSchema.safeParse({ name, email, phone, password });
+    console.log(result);
+    if (!result.success) {
+      return toast.error(result.error.issues[0].message);
+    }
     try {
-      if (!email || !password || !password || !phone) {
-        return toast.error("All fields are required");
-      }
-      if (hasNumbers.test(name)) {
-        return toast.error("Name should not contain numbers");
-      }
-      if (name.toLowerCase() === "admin") {
-        return toast.error("Name is not valid");
-      }
-      if (phone.length !== 8 || phone.charAt(0) === 0) {
-        return toast.error("Phone number is not valid");
-      }
-      if (password !== confirmPassword) {
-        return toast.error("Passwords don't match");
-      }
       const res = await registerUser({ name, email, phone, password }).unwrap();
       dispatch(setUserInfo({ ...res }));
       navigate("/");
     } catch (error) {
-      toast.error(error?.data?.message || error?.error || "an error occurred");
+      toast.error(error?.data?.message || error?.error || "An error occurred");
     }
   };
   return (
     <>
       <Layout>
-        <div className=" flex flex-col items-center justify-center  min-h-screen text-black">
+        <div className=" flex mt-[-100px] flex-col items-center justify-center  min-h-screen text-black">
           <div>
-            <h1 className="mb-5 text-[20px] font-semibold">Create an account</h1>
+            <h1 className="mb-5 text-[20px] font-semibold">Create new account</h1>
           </div>
           <div>
             <form onSubmit={handleRegister}>
               <div className=" h-[40px] bg-opacity-50 w-[300px] rounded-md bg-gray-100  placeholder:text-grey-40  flex items-center mb-4">
                 <input
                   type="text"
+                  name="name"
                   placeholder="name"
                   value={name}
-                  onChange={(e) => {
-                    setName(e.target.value);
-                  }}
+                  onChange={handleChange}
                   className=" w-full shadow border rounded-md h-full bg-gray-100 bg-opacity-50 py-3 px-4  outline-0 focus:shadow-[0_0_0_4px_rgba(74,157,236,0.2)] focus:border-[#4A9DEC] focus:border"
                 />
               </div>
               <div className=" h-[40px] bg-opacity-50 w-[300px] rounded-md   bg-gray-100  placeholder:text-grey-40  flex items-center mb-4">
                 <input
                   type="email"
+                  name="email"
                   placeholder="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={handleChange}
                   className=" w-full shadow border rounded-md h-full bg-gray-100 bg-opacity-50 py-3 px-4  outline-0 focus:shadow-[0_0_0_4px_rgba(74,157,236,0.2)] focus:border-[#4A9DEC] focus:border"
                 />
               </div>
@@ -80,11 +81,11 @@ function Register() {
                 <div className="py-3 px-2  ">965</div>
                 <input
                   type="number"
+                  name="phone"
                   placeholder="phone"
                   value={phone}
-                  onChange={(e) => {
-                    setPhone(e.target.value);
-                  }}
+                  onChange={handleChange}
+                  maxLength={8}
                   className=" w-full  border-l  h-full py-3 px-2 bg-gray-100 bg-opacity-50   outline-0 focus:shadow-[0_0_0_4px_rgba(74,157,236,0.2)] focus:border-[#4A9DEC] focus:border"
                 />
               </div>
@@ -92,8 +93,9 @@ function Register() {
                 <input
                   type={showPassword ? "text" : "password"}
                   placeholder="password"
+                  name="password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={handleChange}
                   className="w-full shadow rounded-md h-full bg-gray-100 bg-opacity-50 py-3 px-4 outline-none outline-0 focus:shadow-[0_0_0_4px_rgba(74,157,236,0.2)] focus:border-[#4A9DEC] focus:border"
                 />
                 <button
@@ -113,8 +115,9 @@ function Register() {
                 <input
                   type={showPassword ? "text" : "password"}
                   placeholder="confirm password"
+                  name="confirmPassword"
                   value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  onChange={handleChange}
                   className="w-full shadow rounded-md h-full bg-gray-100 bg-opacity-50 py-3 px-4 outline-none outline-0 focus:shadow-[0_0_0_4px_rgba(74,157,236,0.2)] focus:border-[#4A9DEC] focus:border"
                 />
                 <button

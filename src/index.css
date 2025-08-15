@@ -1,5 +1,4 @@
 @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap");
-
 @import url("https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 
 @tailwind base;
@@ -11,4 +10,14 @@
 }
 html {
   scroll-behavior: smooth;
+}
+@font-face {
+  font-family: "webschema";
+  src: url("/webschema2.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  font-family: "webschema", sans-serif;
 }

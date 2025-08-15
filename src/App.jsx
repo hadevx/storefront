@@ -13,7 +13,7 @@ import Order from "./pages/order/Order";
 import ProductByCategory from "./pages/productByCategory/ProductByCategory";
 import { useGetStoreStatusQuery } from "./redux/queries/maintenanceApi";
 import Maintenance from "./components/Maintenance";
-
+import PaymentCallback from "./pages/payment/PaymentCallback"; // import the new component
 function App() {
   const userInfo = useSelector((state) => state.auth.userInfo);
   const { data: storeStatus } = useGetStoreStatusQuery();
@@ -25,6 +25,7 @@ function App() {
       <Route path="/" element={<Home />} />
       <Route path="/products/:productId" element={<Product />} />
       <Route path="/category/:category" element={<ProductByCategory />} />
+      <Route path="/payment/callback" element={<PaymentCallback />} /> {/* Add this */}
       <Route path="/cart" element={<Cart />} />
       <Route path="/payment" element={<PrivateRoute element={<Payment />} />} />
       <Route path="/order/:orderId" element={<PrivateRoute element={<Order />} />} />

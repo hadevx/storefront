@@ -8,12 +8,12 @@ import { Tooltip } from "@medusajs/ui";
 function Footer() {
   const containerVariant = {
     hidden: {
-      opacity: 0,
+      opacity: 1,
     },
     animate: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.2,
+        staggerChildren: 0.3,
       },
     },
   };
@@ -21,14 +21,16 @@ function Footer() {
   const childVariant = {
     hidden: {
       opacity: 0,
+      scale: 0.8,
     },
     animate: {
       opacity: 1,
+      scale: 1,
     },
   };
   return (
     <>
-      <motion.div
+      <div
         initial="hidden"
         whileInView="animate"
         variants={containerVariant}
@@ -47,7 +49,7 @@ function Footer() {
             &copy; {new Date().getFullYear()} IPSUM Store. All rights reserved.
           </motion.div>
         </div>
-      </motion.div>
+      </div>
     </>
   );
 }

@@ -39,6 +39,11 @@ export const productApi = apiSlice.injectEndpoints({
         url: "/api/products/latest",
       }),
     }),
+    getCategoriesTree: builder.query({
+      query: () => ({
+        url: "/api/category/tree",
+      }),
+    }),
   }),
 });
 
@@ -50,4 +55,5 @@ export const {
   useGetDeliveryStatusQuery,
   useGetDiscountStatusQuery,
   useGetLatestProductsQuery,
+  useGetCategoriesTreeQuery,
 } = productApi;

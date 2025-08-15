@@ -1,4 +1,3 @@
-import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
@@ -8,12 +7,14 @@ import store from "./redux/store.js";
 import ToastWrapper from "./ToastWrapper.jsx";
 import MaintenanceWrapper from "./components/MaintenanceWrapper.jsx";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+import { StrictMode } from "react";
 
-const clientId = "ARh62ucz98HrJ_r4WDiHMt61gA47jcoXe_Negl3HXEgdwYYod2o0nhCfXJc7H5_R-ZnojyehsDgMV0U1";
+const clientId = "AaG8SvBkw84gADg9acITGalTeUzpYR6RXReOjhiLZM1wYJlEOlPgXfxJc7gl83EIazdHz9bhxTKg0PcH";
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <Provider store={store}>
-      <PayPalScriptProvider options={{ "client-id": clientId }}>
+      <PayPalScriptProvider options={{ "client-id": clientId, locale: "ar_KW" }}>
         <BrowserRouter>
           <ToastWrapper>
             <MaintenanceWrapper>

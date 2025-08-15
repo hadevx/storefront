@@ -1,15 +1,25 @@
 import React from "react";
+import Lottie from "lottie-react";
+import characterAnimation from "./newMaintenance.json"; // Place your JSON file here
 
 const Maintenance = () => {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="text-center p-6 bg-white rounded-lg shadow-lg max-w-lg mx-auto">
-        <h1 className="text-3xl font-bold text-red-600">Maintenance</h1>
-        <p className="mt-4 text-lg text-gray-700">
-          We’re currently performing maintenance. We apologize for any inconvenience this may cause.
-        </p>
-        <p className="mt-2 text-sm text-gray-500">
-          Please check back later or contact support if you need immediate assistance.
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 px-4">
+      <div className="text-center p-8 bg-white rounded-3xl shadow-xl max-w-md lg:max-w-2xl mx-auto border border-blue-200">
+        {/* Lottie animation container */}
+        <div className="lg:w-[500px]  h-auto mx-auto ">
+          <Lottie animationData={characterAnimation} loop={true} />
+        </div>
+
+        <h1
+          style={{ fontFamily: "webschema, sans-serif" }}
+          className=" text-4xl font-extrabold text-rose-500 mb-4 ">
+          {" "}
+          صيانة
+        </h1>
+        <p className=" lg:text-lg text-gray-700 mb-6 leading-relaxed ">
+          أهلا يا صديقي. نحن نقوم حاليًا بأعمال صيانة لتحسين تجربتك معنا. شكراً لصبرك وتفهمك، ونعدك
+          بأننا سنعود قريبًا! إذا كنت بحاجة إلى مساعدة عاجلة، لا تتردد في التواصل معنا.
         </p>
       </div>
     </div>

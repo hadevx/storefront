@@ -1,17 +1,42 @@
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { addToCart } from "../redux/slices/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "../redux/slices/cartSlice";
 import { toast } from "react-toastify";
 import clsx from "clsx";
 import { useGetDiscountStatusQuery } from "../redux/queries/productApi";
 
-function Product({ product }) {
+const findCategoryNameById = (id, nodes) => {
+  if (!id || !Array.isArray(nodes)) return null;
+
+  for (const node of nodes) {
+    if (String(node._id) === String(id)) return node.name;
+    if (node.children) {
+      const result = findCategoryNameById(id, node.children);
+      if (result) return result;
+    }
+  }
+  return null;
+};
+
+function Product({ product, categoryTree }) {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.cartItems);
   const { data: discountStatus } = useGetDiscountStatusQuery();
 
-  console.log("discount status: ", discountStatus);
+  console.log(product);
+  const oldPrice = product.price;
+  let newPrice = oldPrice;
+
+  if (discountStatus && discountStatus.length > 0) {
+    // Find a discount where category includes 'all' or the product category
+    const applicableDiscount = discountStatus.find((d) =>
+      d.category.includes(findCategoryNameById(product.category, categoryTree || []))
+    );
+    console.log(applicableDiscount);
+    if (applicableDiscount) {
+      newPrice = oldPrice - oldPrice * applicableDiscount.discountBy;
+    }
+  }
 
   const handleAddToCart = () => {
     if (product.countInStock === 0) {
@@ -19,7 +44,6 @@ function Product({ product }) {
       return;
     }
     const productInCart = cartItems.find((p) => p._id === product._id);
-
     if (productInCart && productInCart.qty === productInCart.countInStock) {
       return toast.error("Cannot add more", { position: "top-center" });
     }
@@ -27,62 +51,84 @@ function Product({ product }) {
     toast.success(`${product.name} added to cart`, { position: "top-center" });
   };
 
-  function dis(item) {
-    if (discountStatus?.category === "all") {
-      const oldPrice = item.price;
-      const newPrice = oldPrice - oldPrice * discountStatus.discountBy;
-      return { oldPrice, newPrice };
+  console.log(findCategoryNameById(product.category, categoryTree));
+
+  /*   function dis(item) {
+    if (Array.isArray(discountStatus?.category)) {
+      if (discountStatus?.category.includes(findCategoryNameById(item.category, categoryTree))) {
+        const oldPrice = item.price;
+        const newPrice = oldPrice - oldPrice * discountStatus.discountBy;
+        return { oldPrice, newPrice };
+      }
     }
-    if (discountStatus && item.category === discountStatus.category) {
-      const oldPrice = item.price;
-      const newPrice = oldPrice - oldPrice * discountStatus.discountBy;
-      return { oldPrice, newPrice };
-    }
-    return { oldPrice: item.price, newPrice: item.price };
   }
+
   const { oldPrice, newPrice } = dis(product);
+ */
+  /*   const oldPrice = product.price;
+  let newPrice = oldPrice;
+
+  if (discountStatus && discountStatus.length > 0) {
+    // Find a discount where category includes 'all' or the product category
+    const applicableDiscount = discountStatus.find((d) =>
+      d.category.includes(findCategoryNameById(product.category, categoryTree || []))
+    );
+    console.log(applicableDiscount);
+    if (applicableDiscount) {
+      newPrice = oldPrice - oldPrice * applicableDiscount.discountBy;
+    }
+  }
+ */
+  // Get category name for display
+  const categoryName = findCategoryNameById(product.category, categoryTree || []) || "";
+
   return (
     <>
       <Link to={`/products/${product._id}`}>
-        <div className="bg-gray-50 relative rounded-lg border  hover:shadow-md">
-          {discountStatus?.category === product?.category && (
-            <p className="px-2 absolute top-2 left-2 py-1 bg-blue-500 w-[100px] text-white rounded-full">
-              offer {discountStatus.discountBy * 100}%
-            </p>
-          )}
+        <div className="bg-gray-50 relative rounded-lg border hover:shadow-md">
+          {/*    {discountStatus &&
+            (discountStatus.category === "all" ||
+              (Array.isArray(discountStatus.category) &&
+                discountStatus.category.includes(
+                  findCategoryNameById(product.category, categoryTree)
+                ))) && (
+              <p className="px-2 z-20 absolute top-2 left-2 py-1 bg-blue-500 w-[100px] text-white rounded-full">
+                offer {discountStatus.discountBy * 100}%
+              </p>
+            )} */}
           <img
             className="w-full rounded-lg shadow h-[300px] object-cover drop-shadow-2xl"
             src={product?.image}
+            alt={product.name}
           />
         </div>
       </Link>
       <div className="flex py-3 justify-between items-center">
         <div className="flex flex-col w-[100px] lg:w-[130px] justify-start ">
-          <h2 className="lg:text-lg font-semibold  text-gray-800 overflow-hidden whitespace-nowrap truncate">
+          <h2 className="lg:text-lg font-semibold text-gray-800 overflow-hidden whitespace-nowrap truncate">
             {product.name}
           </h2>
+          <p className="text-sm text-gray-500 italic mb-1 truncate">{categoryName}</p>
           <p className="text-lg text-gray-500 font-semibold mt-2 ">
             {newPrice < oldPrice ? (
-              <p>
+              <>
                 <span style={{ textDecoration: "line-through", color: "gray" }}>
                   {oldPrice.toFixed(3)} KD
                 </span>{" "}
                 <span className="text-green-600 font-bold">{newPrice.toFixed(3)} KD</span>
-              </p>
+              </>
             ) : (
-              <p>
-                <span style={{ color: "black", fontWeight: "bold" }}>{oldPrice.toFixed(3)} KD</span>
-              </p>
+              <span style={{ color: "black", fontWeight: "bold" }}>{oldPrice.toFixed(3)} KD</span>
             )}
           </p>
         </div>
         <button
           disabled={product.countInStock === 0}
           className={clsx(
-            "bg-gradient-to-t text-md   hover:bg-gradient-to-b drop-shadow-lg rounded-lg  text-white py-2 px-3 ",
+            "bg-gradient-to-t text-md hover:bg-gradient-to-b drop-shadow-lg rounded-lg text-white py-2 px-3",
             product?.countInStock === 0
-              ? "bg-zinc-300 "
-              : "bg-gradient-to-t from-zinc-900 to-zinc-700 hover:bg-gradient-to-b "
+              ? "bg-zinc-300 cursor-not-allowed"
+              : "bg-gradient-to-t from-zinc-900 to-zinc-700 hover:bg-gradient-to-b"
           )}
           onClick={handleAddToCart}>
           {product?.countInStock === 0 ? "Out of stock" : "Add to cart"}

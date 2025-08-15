@@ -8,8 +8,6 @@ import { useRef } from "react";
 import Invoice from "../../components/Invoise";
 import Badge from "../../components/Badge";
 import { Copy } from "@medusajs/ui";
-import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
-import { useEffect } from "react";
 
 const Order = () => {
   const { orderId } = useParams();
@@ -17,10 +15,11 @@ const Order = () => {
   const userInfo = useSelector((state) => state.auth.userInfo);
   const { data: order } = useGetOrderQuery(orderId);
   console.log(order);
-  const ref = useRef();
   const { toPDF, targetRef } = usePDF({
     filename: `invoice-${order?.createdAt.substring(0, 10)}.pdf`,
   });
+
+  console.log(order);
 
   const calculateSubtotal = () => {
     return order?.orderItems.reduce((total, item) => total + item.qty * item.price, 0).toFixed(3);
@@ -47,14 +46,16 @@ const Order = () => {
                   Order #{order?._id} <Copy content={order?._id} />
                 </h2>
                 <p className="text-sm text-gray-600">
-                  Placed on {order?.createdAt.substring(0, 10)}
+                  Placed on {order?.createdAt?.substring(0, 10)}
                 </p>
               </div>
               <span className="px-3 py-1  rounded-full text-sm font-medium">
                 {order?.isDelivered ? (
                   <Badge variant="success">
-                    Delivered on {order?.deliveredAt.substring(0, 10)}
+                    Delivered on {order?.deliveredAt?.substring(0, 10)}
                   </Badge>
+                ) : order?.isCanceled ? (
+                  <Badge variant="danger">Canceled</Badge>
                 ) : (
                   <Badge variant="pending">Processing</Badge>
                 )}

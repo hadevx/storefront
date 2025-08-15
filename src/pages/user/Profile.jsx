@@ -36,6 +36,7 @@ function Profile() {
   const [cities, setCities] = useState([]);
   const [city, setCity] = useState("");
 
+  console.log(selectedProvince);
   const { id } = useParams();
 
   const dispatch = useDispatch();
@@ -54,8 +55,10 @@ function Profile() {
   //API get address
   const { data: userAddress, refetch } = useGetAddressQuery(userInfo?._id);
 
+  // console.log(userAddress);
   //API get my orders
   const { data: myorders } = useGetMyOrdersQuery();
+  //6899b5fdeba95344aa21bced
 
   //API update address
   const [updateAddress, { isLoading: loadingAddress }] = useUpdateAddressMutation();
@@ -89,12 +92,13 @@ function Profile() {
   };
   const handleUpdateAddress = async () => {
     const res = await updateAddress({
-      province: selectedProvince,
+      governorate: selectedProvince,
       city: city,
       block: newBlock,
       street: newStreet,
       house: newHouse,
     });
+
     refetch();
 
     setClickEditAddress(!clickEditAddress);
@@ -160,10 +164,10 @@ function Profile() {
                   onClick={handleLogout}
                   disabled={isLoading}
                   className={clsx(
-                    "bg-gradient-to-t text-xs  lg:text-base items-center flex justify-center hover:bg-gradient-to-t  p-3 rounded-lg text-white font-bold drop-shadow-md ",
+                    "bg-gradient-to-t text-xs  lg:text-base items-center flex justify-center hover:bg-gradient-to-b transition-all duration-300  p-3 rounded-lg text-white font-bold drop-shadow-md ",
                     isLoading ? "from-gray-500 to-gray-400" : "from-rose-500 to-rose-400"
                   )}>
-                  {isLoading ? <Spinner className="border-t-gray-500" /> : "Log out"}
+                  {isLoading ? <Spinner className="border-t-rose-500" /> : "Log out"}
                 </button>
               </div>
             </motion.div>
@@ -202,6 +206,7 @@ function Profile() {
                             onChange={(e) => setNewEmail(e.target.value)}
                           />
                           <input
+                            type="number"
                             value={newPhone}
                             placeholder={userInfo?.phone}
                             className="rounded-lg w-[150px] lg:w-full px-2 bg-gray-100/50 border shadow outline-0 focus:shadow-[0_0_0_4px_rgba(74,157,236,0.2)] focus:border-[#4A9DEC] focus:border"
@@ -224,7 +229,7 @@ function Profile() {
                   <button
                     onClick={() => setClickEditPersonal(!clickEditPersonal)}
                     disabled={isLoading}
-                    className="bg-gradient-to-t text-xs lg:text-lg lg:text-md gap-2 items-center flex justify-center from-zinc-200 to-zinc-50 p-3 rounded-lg text-black font-bold drop-shadow-md ">
+                    className="bg-gradient-to-t hover:opacity-70 transition-all duration-300 text-xs lg:text-lg lg:text-md gap-2 items-center flex justify-center from-zinc-200 to-zinc-50 p-3 rounded-lg text-black font-bold drop-shadow-md ">
                     {clickEditPersonal ? "Cancel" : <PencilLine size={18} />}
                   </button>
                 </div>
@@ -246,7 +251,7 @@ function Profile() {
                   <div>
                     <div className="flex gap-5 lg:gap-14 ">
                       <div className="flex flex-col gap-2 ">
-                        <h1 className="text-gray-700">Province:</h1>
+                        <h1 className="text-gray-700">Governorate:</h1>
                         <h1 className="text-gray-700">City:</h1>
                         <h1 className="text-gray-700">Block:</h1>
                         <h1 className="text-gray-700">Street:</h1>
@@ -254,11 +259,11 @@ function Profile() {
                       </div>
                       {!clickEditAddress ? (
                         <div className="flex flex-col gap-2 ">
-                          <h1 className="font-bold">{userAddress.province}</h1>
-                          <h1 className="font-bold">{userAddress.city}</h1>
-                          <h1 className="font-bold">{userAddress.block}</h1>
-                          <h1 className="font-bold">{userAddress.street}</h1>
-                          <h1 className="font-bold">{userAddress.house}</h1>
+                          <h1 className="font-bold">{userAddress?.governorate}</h1>
+                          <h1 className="font-bold">{userAddress?.city}</h1>
+                          <h1 className="font-bold">{userAddress?.block}</h1>
+                          <h1 className="font-bold">{userAddress?.street}</h1>
+                          <h1 className="font-bold">{userAddress?.house}</h1>
                         </div>
                       ) : (
                         <div className="flex flex-col lg:flex-row items-center gap-5">
@@ -270,7 +275,7 @@ function Profile() {
                               <option value="" disabled={true}>
                                 Choose province
                               </option>
-                              {provinces.map((province) => (
+                              {provinces?.map((province) => (
                                 <option key={province.name} value={province.name}>
                                   {province.name}
                                 </option>
@@ -291,19 +296,19 @@ function Profile() {
                             </select>
                             <input
                               value={newBlock}
-                              placeholder={userAddress.block}
+                              placeholder={userAddress?.block}
                               className="rounded-lg w-[150px] lg:w-full px-2 bg-gray-100/50 border shadow outline-0 focus:shadow-[0_0_0_4px_rgba(74,157,236,0.2)] focus:border-[#4A9DEC] focus:border"
                               onChange={(e) => setNewBlock(e.target.value)}
                             />
                             <input
                               value={newStreet}
-                              placeholder={userAddress.street}
+                              placeholder={userAddress?.street}
                               className="rounded-lg w-[150px] lg:w-full px-2 bg-gray-100/50 border shadow outline-0 focus:shadow-[0_0_0_4px_rgba(74,157,236,0.2)] focus:border-[#4A9DEC] focus:border"
                               onChange={(e) => setNewStreet(e.target.value)}
                             />
                             <input
                               value={newHouse}
-                              placeholder={userAddress.house}
+                              placeholder={userAddress?.house}
                               className="rounded-lg w-[150px] lg:w-full px-2 bg-gray-100/50 border shadow outline-0 focus:shadow-[0_0_0_4px_rgba(74,157,236,0.2)] focus:border-[#4A9DEC] focus:border"
                               onChange={(e) => setNewHouse(e.target.value)}
                             />
@@ -343,7 +348,7 @@ function Profile() {
           </motion.div>
         </div>
         {myorders?.length === 0 ? (
-          <div className=" lg:w-[30%]">
+          <div className=" lg:w-[30%] ">
             <h1 className="text-3xl font-bold ">
               My orders <span className="text-sm text-blue-600 ">({myorders?.length})</span>
             </h1>
@@ -354,7 +359,7 @@ function Profile() {
             initial="hidden"
             animate="visible"
             variants={containerVariants}
-            className="flex flex-col gap-5">
+            className="flex flex-col gap-5 h-screen overflow-y-scroll">
             <h1 className="text-3xl font-bold ">My orders ({myorders?.length})</h1>
             {myorders?.map((order) => (
               <motion.div
@@ -362,17 +367,17 @@ function Profile() {
                 variants={childVariants}
                 className="flex  flex-col hover:bg-zinc-200/5  gap-5 border bg-zinc-200/10 p-7 drop-shadow-lg shadow rounded-lg">
                 <div className="flex flex-col gap-5">
-                  <Link to={`/order/${order._id}`} className="flex gap-5 ">
+                  <Link to={`/order/${order?._id}`} className="flex gap-5 ">
                     <h1 className="flex flex-col gap-2 items-center ">
                       Placed in:{" "}
-                      <span className="font-bold"> {order.createdAt.substring(0, 10)}</span>
+                      <span className="font-bold"> {order?.createdAt.substring(0, 10)}</span>
                     </h1>
                     <h1 className="flex flex-col gap-2 items-center ">
-                      Payment method: <span className="font-bold">{order.paymentMethod}</span>
+                      Payment method: <span className="font-bold">{order?.paymentMethod}</span>
                     </h1>
                     <h1 className="flex flex-col gap-2 items-center">
                       Total price:{" "}
-                      <span className="font-bold">{order.totalPrice.toFixed(3)} KD</span>
+                      <span className="font-bold">{order?.totalPrice.toFixed(3)} KD</span>
                     </h1>
                     <h1 className="flex flex-col gap-2 items-center">
                       Products:
@@ -383,6 +388,8 @@ function Profile() {
                       <span className="font-bold text-sm">
                         {order?.isDelivered ? (
                           <Badge variant="success">Delivered </Badge>
+                        ) : order?.isCanceled ? (
+                          <Badge variant="danger">Canceled</Badge>
                         ) : (
                           <Badge variant="pending">Processing</Badge>
                         )}
