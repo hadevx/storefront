@@ -25,8 +25,8 @@ function Cart() {
   const navigate = useNavigate();
 
   // Redux state selectors
-  const cartItems = useSelector((state) => state.cart.cartItems);
-  const userInfo = useSelector((state) => state.auth.userInfo);
+  const cartItems = useSelector((state) => state?.cart.cartItems);
+  const userInfo = useSelector((state) => state?.auth.userInfo);
 
   // Fetch user address if logged in
   const { data: userAddress } = useGetAddressQuery(userInfo?._id);
@@ -90,7 +90,7 @@ function Cart() {
       const validProductIds = new Set(products.map((p) => p._id));
 
       // Filter out cart items not found in product list
-      const filteredCart = cartItems.filter((item) => validProductIds.has(item._id));
+      const filteredCart = cartItems?.filter((item) => validProductIds.has(item._id));
 
       // Remove invalid cart items
       if (filteredCart.length !== cartItems.length) {
@@ -110,7 +110,7 @@ function Cart() {
           <h1 className="font-bold text-3xl mb-5">Cart</h1>
 
           {/* Show empty cart message if no items */}
-          {cartItems.length === 0 ? (
+          {cartItems?.length === 0 ? (
             <Message dismiss={false}>Your cart is empty</Message>
           ) : (
             <table className="min-w-full">
@@ -136,7 +136,7 @@ function Cart() {
                 </tr>
               </thead>
               <tbody>
-                {cartItems.map((item) => (
+                {cartItems?.map((item) => (
                   <tr key={item._id} className="hover:bg-zinc-100/40">
                     {/* Product Image */}
                     <td className="px-0 lg:px-4 py-10 border-b border-gray-300">
@@ -156,7 +156,7 @@ function Cart() {
 
                     {/* Price */}
                     <td className="px-2 lg:px-4 py-2 border-b border-gray-300 text-sm text-gray-800">
-                      {item.price.toFixed(3)} KD
+                      {item?.price.toFixed(3)} KD
                     </td>
 
                     {/* Quantity Selector */}
@@ -202,7 +202,9 @@ function Cart() {
             {/* Subtotal */}
             <div className="flex justify-between">
               <p>Subtotal:</p>
-              <p>{cartItems.reduce((acc, item) => acc + item.price * item.qty, 0).toFixed(3)} KD</p>
+              <p>
+                {cartItems?.reduce((acc, item) => acc + item.price * item.qty, 0).toFixed(3)} KD
+              </p>
             </div>
 
             {/* Shipping */}

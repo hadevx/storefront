@@ -155,7 +155,7 @@ function Profile() {
                 <div>
                   <div className="flex items-center gap-2">
                     <h1 className="font-extrabold text-2xl lg:text-3xl ">{userInfo?.name}</h1>
-                    {userInfo?.isAdmin && <Badge variant="admin">admin user</Badge>}
+                    {/*  {userInfo?.isAdmin && <Badge variant="admin">admin user</Badge>} */}
                   </div>
                 </div>
               </div>

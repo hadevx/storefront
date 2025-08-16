@@ -16,7 +16,6 @@ import Maintenance from "./components/Maintenance";
 import PaymentCallback from "./pages/payment/PaymentCallback"; // import the new component
 function App() {
   const userInfo = useSelector((state) => state.auth.userInfo);
-  const { data: storeStatus } = useGetStoreStatusQuery();
 
   return (
     <Routes>
