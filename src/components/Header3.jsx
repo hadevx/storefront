@@ -80,9 +80,8 @@ function Header({ onSearch }) {
 
   return (
     <>
-      {/* Top banner */}
       {storeStatus?.[0]?.banner?.trim() && (
-        <div className="bg-black text-white text-center py-2 px-4 text-sm lg:text-base font-semibold">
+        <div className="bg-black text-white text-center py-2 px-4 text-sm lg:text-base font-semibold break-words">
           {storeStatus[0].banner}
         </div>
       )}

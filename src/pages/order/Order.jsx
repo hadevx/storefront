@@ -10,16 +10,14 @@ import Badge from "../../components/Badge";
 import { Copy } from "@medusajs/ui";
 
 const Order = () => {
-  const { orderId } = useParams();
-
   const userInfo = useSelector((state) => state.auth.userInfo);
+
+  const { orderId } = useParams();
   const { data: order } = useGetOrderQuery(orderId);
-  console.log(order);
+
   const { toPDF, targetRef } = usePDF({
     filename: `invoice-${order?.createdAt.substring(0, 10)}.pdf`,
   });
-
-  console.log(order);
 
   const calculateSubtotal = () => {
     return order?.orderItems.reduce((total, item) => total + item.qty * item.price, 0).toFixed(3);
