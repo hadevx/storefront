@@ -255,12 +255,13 @@ function Header({ onSearch }) {
                 </Link>
 
                 {categoryTree.map((cat) => (
-                  <button
+                  <Link
+                    to={`/category/${cat.name}`}
                     key={cat._id}
                     onClick={() => setClicked(false)}
                     className="text-left w-full py-2 hover:text-rose-400">
                     {cat.name.charAt(0).toUpperCase() + cat.name.slice(1)}
-                  </button>
+                  </Link>
                 ))}
 
                 <div className="relative mt-6 flex flex-col">

@@ -96,7 +96,7 @@ function Home() {
           </motion.div>
         </div>
 
-        <div id="products" className="px-4 lg:px-28 py-12">
+        <div id="products" className=" lg:px-28 py-12">
           <h2 className="text-4xl font-semibold mb-10 text-gray-900">Latest Products</h2>
           {isLoading ? (
             <Loader />
@@ -106,7 +106,7 @@ function Home() {
               whileInView="visible"
               viewport={{ once: true, amount: 0.3 }}
               variants={containerVariants}
-              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 lg:gap-8">
+              className="grid  grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5  lg:gap-8">
               {products?.map((product) => (
                 <motion.div
                   key={product._id}
