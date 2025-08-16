@@ -4,7 +4,7 @@ import address2 from "../../assets/images/kuwait.jpg";
 import { useSelector } from "react-redux";
 import { useCreateAddressMutation } from "../../redux/queries/userApi";
 import { toast } from "react-toastify";
-
+import { useGetAddressQuery } from "../../redux/queries/userApi";
 export default function AddressModal({ isOpen, onClose }) {
   const [selectedGovernorate, setSelectedGovernorate] = useState("");
   const [cities, setCities] = useState([]);
@@ -15,6 +15,7 @@ export default function AddressModal({ isOpen, onClose }) {
 
   const [createAddress, { isLoading: loadingCreateAddress }] = useCreateAddressMutation();
   const userInfo = useSelector((state) => state.auth.userInfo);
+  const { refetch } = useGetAddressQuery(userInfo?._id);
 
   const modalRef = useRef();
 
@@ -49,6 +50,7 @@ export default function AddressModal({ isOpen, onClose }) {
       house,
     }).unwrap();
     toast.success("You've added a new address", { position: "top-center" });
+    refetch();
     onClose();
   };
 

@@ -65,7 +65,7 @@ function Cart() {
       return;
     }
     if (!userAddress) {
-      navigate("/address");
+      navigate("/profile");
       toast.info("Add your address", { position: "top-center" });
       return;
     }

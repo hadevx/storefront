@@ -339,13 +339,6 @@ function Profile() {
               </motion.div>
             ) : (
               <>
-                {/*      <Link
-                  to="/address"
-                  className="flex hover:bg-zinc-200/5 cursor-pointer items-center gap-5 border bg-zinc-200/10 p-7 drop-shadow-lg shadow rounded-lg">
-                  <h1 className="font-extrabold text-xl ">Add your Address</h1>
-                  <HousePlus />
-                </Link> */}
-
                 <button
                   onClick={() => setIsModalOpen(true)}
                   className="flex hover:bg-zinc-200/5 cursor-pointer items-center gap-5 border bg-zinc-200/10 p-7 drop-shadow-lg shadow rounded-lg">
