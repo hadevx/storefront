@@ -84,29 +84,29 @@ function Product() {
         Go Back
       </Link> */}
 
-      <div className="lg:container sm:px-2 lg:mx-auto flex  min-h-screen items-center flex-col  sm:flex-row justify-center   ">
+      <div className="md:container    sm:px-2 md:mx-auto flex  min-h-screen items-center flex-col  sm:flex-row justify-center   ">
         {isLoading ? (
           <Loader />
         ) : (
           <>
-            <div className=" w-[400px] sm:w-2/3 sm:h-[700px] ">
+            <div className=" w-[400px] sm:w-2/3  md:max-w-1/2 md:w-[500px] lg:w-1/2">
               <img src={product?.image} className="w-full h-full  object-cover" />
             </div>
-            <div className="relative  justify-center items-center rounded-2xl  p-10 lg:p-20 w-full sm:w-1/2 lg:w-1/2 h-[700px]">
-              {product?.category === discountStatus?.category && (
-                <p className="absolute top-0 lg:top-5 bg-blue-500 text-white px-2 py-1 rounded-full">
-                  {discountStatus?.discountBy * 100}% offer
-                </p>
-              )}
+            <div className="relative flex flex-col    rounded-2xl  p-10 lg:p-20 w-full sm:w-1/2 md:w-1/2 ">
+              <p className="absolute top-0 lg:top-5 bg-blue-500 text-white px-2 py-1 rounded-full">
+                -{(((oldPrice - newPrice) / oldPrice) * 100).toFixed(0)}%
+              </p>
 
-              <h1 className="text-3xl font-extrabold mb-10">{product?.name}</h1>
-              <p className="text-gray-500 mb-10 text-lg lg:text-xl">{product?.description}</p>
+              <h1 className="text-3xl  font-extrabold lg:mb-5">{product?.name}</h1>
+              <p className="text-gray-500 mb-5 lg:mb-10 text-base lg:text-xl">
+                {product?.description}
+              </p>
               {product?.countInStock > 0 && (
-                <div className="flex justify-start items-center gap-5 mb-10">
+                <div className="flex justify-start items-center gap-5 mb-5">
                   <button
                     onClick={handleDecrement}
                     className={clsx(
-                      "px-3 py-1 active:bg-gray-500 drop-shadow-xl bg-black border-[2px] rounded-lg font-bold text-3xl",
+                      "px-3 py-1 active:bg-gray-500 drop-shadow-xl bg-black border-[2px] rounded-md  font-bold text-3xl",
                       counter === 1
                         ? "bg-inherit border-[2px] border-black text-black"
                         : "text-white border-[2px]"
@@ -117,7 +117,7 @@ function Product() {
                   <button
                     onClick={handleIncrement}
                     className={clsx(
-                      "px-3 py-1 active:bg-gray-500 drop-shadow-xl bg-black border-[2px] rounded-lg font-bold text-3xl",
+                      "px-3 py-1 active:bg-gray-500 drop-shadow-xl bg-black border-[2px] rounded-md font-bold text-3xl",
                       counter === product.countInStock
                         ? "bg-inherit border-[2px] border-black text-black"
                         : "text-white border-[2px]"
@@ -131,7 +131,7 @@ function Product() {
                   product?.countInStock <= 5 &&
                   `Only ${product.countInStock} left in stock`}
               </p>
-              <p className="font-bold text-3xl mb-10 ">
+              <p className="font-bold text-3xl mb-5 ">
                 {newPrice < oldPrice ? (
                   <p className="flex flex-col">
                     <span style={{ textDecoration: "line-through", color: "gray" }}>

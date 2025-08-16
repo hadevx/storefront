@@ -13,16 +13,23 @@ import Order from "./pages/order/Order";
 import ProductByCategory from "./pages/productByCategory/ProductByCategory";
 import { useGetStoreStatusQuery } from "./redux/queries/maintenanceApi";
 import Maintenance from "./components/Maintenance";
-import PaymentCallback from "./pages/payment/PaymentCallback"; // import the new component
+import PaymentCallback from "./pages/payment/PaymentCallback";
+import AllProducts from "./pages/product/AllProducts";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 function App() {
   const userInfo = useSelector((state) => state.auth.userInfo);
-
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [pathname]);
   return (
     <Routes>
       <Route path="/login" element={!userInfo ? <Login /> : <Navigate to="/" />} />
       <Route path="/register" element={!userInfo ? <Register /> : <Navigate to="/" />} />
       <Route path="/" element={<Home />} />
       <Route path="/products/:productId" element={<Product />} />
+      <Route path="/all-products" element={<AllProducts />} />
       <Route path="/category/:category" element={<ProductByCategory />} />
       <Route path="/payment/callback" element={<PaymentCallback />} /> {/* Add this */}
       <Route path="/cart" element={<Cart />} />

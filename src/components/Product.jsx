@@ -50,10 +50,10 @@ function Product({ product, categoryTree }) {
   const categoryName = findCategoryNameById(product.category, categoryTree || []) || "";
 
   return (
-    <div className="flex flex-col bg-white rounded-2xl  hover:shadow-xl  duration-300 overflow-hidden">
+    <div className="flex flex-col bg-white rounded-2xl   duration-300 overflow-hidden">
       <Link to={`/products/${product._id}`} className="relative group">
         {newPrice < oldPrice && (
-          <span className="absolute top-3 left-3 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full z-10">
+          <span className="absolute top-3 left-3 bg-blue-500 text-white text-xs font-semibold px-2 py-1 rounded-full z-10">
             -{(((oldPrice - newPrice) / oldPrice) * 100).toFixed(0)}%
           </span>
         )}

@@ -113,9 +113,9 @@ function ProductByCategory() {
 
   return (
     <Layout>
-      <div className="min-h-screen px-2 py-5 lg:px-28">
+      <div className="min-h-screen  py-5 lg:px-28">
         {/* Breadcrumb */}
-        <nav className="mb-4 text-gray-600 text-sm">
+        <nav className="mb-4 px-2 text-gray-600 text-sm">
           <ol className="flex items-center flex-wrap">
             <li>
               <Link to="/" className="hover:underline">
@@ -139,17 +139,17 @@ function ProductByCategory() {
           </ol>
         </nav>
 
-        <h1 className="text-4xl font-semibold mb-3 capitalize">{category}:</h1>
+        <h1 className="text-4xl px-2 font-semibold mb-3 capitalize">{category}:</h1>
 
         {/* Filters */}
-        <div className="flex flex-col md:flex-row gap-3 md:items-center mb-6">
+        <div className="flex px-2 flex-col md:flex-row gap-3 md:items-center mb-6">
           {/* Search */}
           <input
             type="text"
             placeholder="Search products..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring focus:ring-blue-500 w-full md:w-1/3"
+            className="border  border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring focus:ring-blue-500 w-full md:w-1/3"
           />
 
           {/* Price Range */}
@@ -206,10 +206,10 @@ function ProductByCategory() {
           <Loader />
         ) : filteredProducts.length > 0 ? (
           <>
-            <p className="mb-10 text-gray-700">
+            <p className="mb-10 text-gray-700 px-2">
               {filteredProducts.length} {filteredProducts.length === 1 ? "product" : "products"}
             </p>
-            <div className="flex flex-wrap lg:items-center gap-6 lg:gap-7">
+            <div className="flex flex-wrap lg:items-center  lg:gap-7">
               {filteredProducts.map((product) => (
                 <div key={product._id} className="w-[210px] md:min-w-[250px] rounded-lg">
                   <Product product={product} categoryTree={categoryTree || []} />
