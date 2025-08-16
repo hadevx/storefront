@@ -21,6 +21,7 @@ function Header({ onSearch }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [noProductFound, setNoProductFound] = useState(false);
   const [expandedCategoryId, setExpandedCategoryId] = useState(null);
+  const [expandedMobileCat, setExpandedMobileCat] = useState(null);
 
   const { data: products = [] } = useGetProductsQuery();
   const { pathname } = useLocation();
@@ -31,12 +32,9 @@ function Header({ onSearch }) {
   const { data: storeStatus } = useGetStoreStatusQuery();
 
   const menuRef = useRef();
-
   const cartCount = cartItems.reduce((a, c) => a + c.qty, 0);
 
-  const handleClick = () => {
-    setClicked(!clicked);
-  };
+  const handleClick = () => setClicked(!clicked);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -50,9 +48,8 @@ function Header({ onSearch }) {
   }, []);
 
   useEffect(() => {
-    if (clicked) {
-      document.body.classList.add("no-scroll");
-    } else {
+    if (clicked) document.body.classList.add("no-scroll");
+    else {
       document.body.classList.remove("no-scroll");
       setNoProductFound(false);
       setExpandedCategoryId(null);
@@ -63,36 +60,21 @@ function Header({ onSearch }) {
     const value = e.target.value;
     setSearchQuery(value);
     setNoProductFound(false);
-    if (onSearch) {
-      onSearch(value);
-    }
+    if (onSearch) onSearch(value);
   };
 
   const handleSearchSubmit = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
-
       const matchedProduct = products.find(
         (product) => product.name.toLowerCase() === searchQuery.trim().toLowerCase()
       );
-
       if (matchedProduct) {
         navigate(`/products/${matchedProduct._id}`);
         setClicked(false);
         setNoProductFound(false);
-      } else {
-        setNoProductFound(true);
-      }
+      } else setNoProductFound(true);
     }
-  };
-
-  const onCategorySelect = () => {
-    setClicked(false);
-    setExpandedCategoryId(null);
-  };
-
-  const toggleCategory = (id) => {
-    setExpandedCategoryId((prev) => (prev === id ? null : id));
   };
 
   return (
@@ -105,71 +87,91 @@ function Header({ onSearch }) {
 
       <header className="bg-white shadow-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between h-16 ">
+            {/* Logo */}
             <div className="flex items-center w-[20%]">
               <Link to="/">
                 <img src={logo} alt="logo" className="h-10" />
               </Link>
             </div>
 
-            {/* Desktop categories with clickable arrow to toggle submenu */}
-            <nav className="hidden md:flex space-x-6 w-[40%] justify-center">
-              {/* <button
-                onClick={onCategorySelect}
-                className={clsx("text-sm font-medium cursor-pointer hover:text-rose-600")}>
-                All
-              </button> */}
-              {categoryTree?.map((cat) => {
-                const hasChildren = cat.children && cat.children.length > 0;
-                const isExpanded = expandedCategoryId === cat._id;
-                return (
-                  <div key={cat._id} className="relative">
-                    <button
-                      onClick={() => toggleCategory(cat._id)}
-                      className={clsx(
-                        "text-sm font-medium cursor-pointer hover:text-rose-600 flex items-center space-x-1 bg-transparent border-none",
-                        "focus:outline-none"
-                      )}
-                      type="button">
-                      <Link
-                        to={`/category/${cat.name}`}
-                        className="whitespace-nowrap"
-                        onClick={() => setClicked(false)}>
-                        {cat.name.charAt(0).toUpperCase() + cat.name.slice(1)}
-                      </Link>
-                      {hasChildren && (
-                        <ChevronDown
-                          size={14}
-                          className={clsx(
-                            "transition-transform duration-200",
-                            isExpanded ? "rotate-180" : "rotate-0"
-                          )}
-                        />
-                      )}
-                    </button>
+            {/* Desktop nav */}
+            <nav className="hidden md:flex space-x-6 w-[40%] justify-center relative ">
+              <Link to="/" className="text-sm font-medium hover:text-rose-600">
+                Home
+              </Link>
 
-                    {hasChildren && isExpanded && (
-                      <div className="absolute top-full mt-1 left-0 bg-white shadow-lg rounded-md border border-gray-200 min-w-[150px] z-20">
-                        {cat.children.map((subcat) => (
+              {/* Category mega menu */}
+              <div className="relative">
+                <button
+                  onClick={() => setExpandedCategoryId((prev) => (prev === "all" ? null : "all"))}
+                  className="text-sm font-medium cursor-pointer hover:text-rose-600 flex items-center space-x-1">
+                  Categories
+                  <ChevronDown
+                    size={14}
+                    className={`transition-transform duration-200 ${
+                      expandedCategoryId === "all" ? "rotate-180" : "rotate-0"
+                    }`}
+                  />
+                </button>
+
+                <AnimatePresence>
+                  {expandedCategoryId === "all" && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="absolute top-full mt-3 left-0 w-[700px] bg-white shadow-2xl rounded-lg border border-gray-200 p-6 grid grid-cols-3 gap-6 z-20">
+                      {categoryTree?.map((cat) => (
+                        <div key={cat._id}>
                           <Link
-                            key={subcat._id}
-                            to={`/category/${subcat.name}`}
-                            className="block px-4 py-2 text-gray-700 hover:bg-rose-100 hover:text-rose-600 whitespace-nowrap"
-                            onClick={() => {
-                              setClicked(false);
-                              setExpandedCategoryId(null);
-                            }}>
-                            {subcat.name.charAt(0).toUpperCase() + subcat.name.slice(1)}
+                            to={`/category/${cat.name}`}
+                            onClick={() => setExpandedCategoryId(null)}
+                            className="block font-semibold text-gray-800 hover:text-rose-600">
+                            {cat.name.charAt(0).toUpperCase() + cat.name.slice(1)}
                           </Link>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+
+                          {cat.children?.length > 0 && (
+                            <ul className="mt-2 space-y-1">
+                              {cat.children.map((subcat) => (
+                                <li key={subcat._id}>
+                                  <Link
+                                    to={`/category/${subcat.name}`}
+                                    onClick={() => setExpandedCategoryId(null)}
+                                    className="text-sm text-gray-600 hover:text-rose-500">
+                                    {subcat.name.charAt(0).toUpperCase() + subcat.name.slice(1)}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              <Link
+                to="/about"
+                className={clsx(
+                  "text-sm font-medium hover:text-rose-600",
+                  pathname === "/about" && "text-rose-600"
+                )}>
+                About
+              </Link>
+              <Link
+                to="/contact"
+                className={clsx(
+                  "text-sm font-medium hover:text-rose-600",
+                  pathname === "/contact" && "text-rose-600"
+                )}>
+                Contact
+              </Link>
             </nav>
 
-            <div className="hidden md:flex flex-1  mx-4 flex-col relative ">
+            {/* Search */}
+            <div className="hidden md:flex flex-1 mx-4 flex-col relative ">
               <div className="relative w-full">
                 <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                 <input
@@ -181,7 +183,7 @@ function Header({ onSearch }) {
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent outline-none"
                 />
                 {noProductFound && (
-                  <div className="absolute left-0 top-full mt-1 flex items-center space-x-2 p-2 bg-rose-100 border border-rose-300 rounded-md shadow-sm select-none w-full z-10">
+                  <div className="absolute left-0 top-full mt-1 flex items-center space-x-2 p-2 bg-rose-100 border border-rose-300 rounded-md shadow-sm w-full z-10">
                     <AlertCircle className="text-rose-600 w-5 h-5" />
                     <span className="text-rose-700 font-semibold text-sm">No product found</span>
                   </div>
@@ -189,11 +191,12 @@ function Header({ onSearch }) {
               </div>
             </div>
 
-            <div className="hidden md:flex items-center space-x-6 w-[20%] justify-end">
+            {/* User & Cart */}
+            <div className="hidden md:flex items-center space-x-6  justify-end ">
               {userInfo ? (
                 <Link
                   to="/profile"
-                  className="flex items-center space-x-1 text-gray-700 hover:text-rose-600 transition-colors">
+                  className="flex items-center space-x-1 text-gray-700 hover:text-rose-600">
                   <UserIconSvg className="h-5 w-5" />
                   {userInfo?.name}
                 </Link>
@@ -204,11 +207,9 @@ function Header({ onSearch }) {
                   Login
                 </Link>
               )}
-
               <Link
                 to="/cart"
-                className="relative flex items-center text-gray-700 hover:text-rose-600 transition-colors p-1 rounded-md"
-                aria-label="Open cart">
+                className="relative flex items-center text-gray-700 hover:text-rose-600">
                 <ShoppingBasket strokeWidth={1} size={24} />
                 {cartCount > 0 && (
                   <span className="absolute -top-2 -right-2 bg-rose-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
@@ -218,22 +219,23 @@ function Header({ onSearch }) {
               </Link>
             </div>
 
+            {/* Mobile toggle */}
             <button
               onClick={handleClick}
-              className="md:hidden text-gray-700 hover:text-rose-600 p-2 rounded-md"
-              aria-label={clicked ? "Close menu" : "Open menu"}>
+              className="md:hidden text-gray-700 hover:text-rose-600 p-2 rounded-md z-50 bg-white">
               {clicked ? <X size={28} /> : <Menu size={28} />}
             </button>
           </div>
 
+          {/* Mobile menu */}
           <AnimatePresence>
             {clicked && (
               <motion.nav
                 ref={menuRef}
                 initial={{ opacity: 0, x: -100 }}
-                animate={{ opacity: 1, x: 0, transition: { staggerChildren: 0.1 } }}
+                animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -100 }}
-                className="bg-gradient-to-tr overflow-y-auto from-zinc-900 to-zinc-700 shadow-2xl inset-0 fixed z-40 text-zinc-50 font-semibold py-24 px-6 text-lg flex flex-col gap-6">
+                className="bg-gradient-to-tr from-zinc-900 to-zinc-700 fixed inset-0 z-40 text-zinc-50 py-24 px-6 text-lg flex flex-col gap-6">
                 <Link
                   to="/"
                   onClick={() => setClicked(false)}
@@ -244,26 +246,73 @@ function Header({ onSearch }) {
                   Home
                 </Link>
 
-                <Link
-                  to="/cart"
-                  onClick={() => setClicked(false)}
-                  className={clsx(
-                    "py-2 border-b border-transparent",
-                    pathname === "/cart" && "text-rose-400 border-rose-600"
-                  )}>
+                <Link to="/cart" onClick={() => setClicked(false)} className="py-2">
                   Cart ({cartCount})
                 </Link>
 
-                {categoryTree.map((cat) => (
-                  <Link
-                    to={`/category/${cat.name}`}
-                    key={cat._id}
-                    onClick={() => setClicked(false)}
-                    className="text-left w-full py-2 hover:text-rose-400">
-                    {cat.name.charAt(0).toUpperCase() + cat.name.slice(1)}
-                  </Link>
-                ))}
+                {/* Mobile Category accordion */}
+                <div className="">
+                  <button
+                    onClick={() => setExpandedMobileCat((prev) => (prev === "all" ? null : "all"))}
+                    className="flex items-center  hover:text-rose-500 gap-2">
+                    Categories
+                    <ChevronDown
+                      size={16}
+                      className={`transition-transform ${
+                        expandedMobileCat === "all" ? "rotate-180" : "rotate-0"
+                      }`}
+                    />
+                  </button>
+                  <AnimatePresence>
+                    {expandedMobileCat === "all" && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="pl-4 flex flex-col gap-2">
+                        {categoryTree?.map((cat) => (
+                          <div key={cat._id}>
+                            <Link
+                              to={`/category/${cat.name}`}
+                              onClick={() => setClicked(false)}
+                              className="block py-1 hover:text-rose-400">
+                              {cat.name.charAt(0).toUpperCase() + cat.name.slice(1)}
+                            </Link>
+                            {cat.children?.length > 0 && (
+                              <ul className="pl-4 text-sm space-y-1">
+                                {cat.children.map((subcat) => (
+                                  <li key={subcat._id}>
+                                    <Link
+                                      to={`/category/${subcat.name}`}
+                                      onClick={() => setClicked(false)}
+                                      className="hover:text-rose-400">
+                                      {subcat.name.charAt(0).toUpperCase() + subcat.name.slice(1)}
+                                    </Link>
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                          </div>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
 
+                <Link
+                  to="/about"
+                  onClick={() => setClicked(false)}
+                  className="py-2 hover:text-rose-400">
+                  About
+                </Link>
+                <Link
+                  to="/contact"
+                  onClick={() => setClicked(false)}
+                  className="py-2 hover:text-rose-400">
+                  Contact
+                </Link>
+
+                {/* Search (mobile) */}
                 <div className="relative mt-6 flex flex-col">
                   <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                   <input
@@ -272,16 +321,11 @@ function Header({ onSearch }) {
                     value={searchQuery}
                     onChange={handleSearchChange}
                     onKeyDown={handleSearchSubmit}
-                    className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-rose-500 focus:border-transparent outline-none text-zinc-900"
+                    className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 text-zinc-900"
                   />
-                  {noProductFound && (
-                    <div className="absolute left-0 top-full mt-1 flex items-center space-x-2 p-2 bg-rose-100 border border-rose-300 rounded-md shadow-sm select-none w-full z-10">
-                      <AlertCircle className="text-rose-600 w-5 h-5" />
-                      <span className="text-rose-700 font-semibold text-sm">No product found</span>
-                    </div>
-                  )}
                 </div>
 
+                {/* User */}
                 <Link
                   to="/profile"
                   className="flex items-center space-x-2 py-2 border-t border-zinc-600 hover:text-rose-400">
@@ -289,9 +333,9 @@ function Header({ onSearch }) {
                   <span>{userInfo ? userInfo.name : "Account"}</span>
                 </Link>
 
-                <div className="mt-auto text-xs text-zinc-400 select-none text-center">
+                <div className="mt-auto text-xs text-zinc-400 text-center">
                   <p>
-                    Designed by <Link className="font-bold font-mono">Webschema</Link>
+                    Designed by <span className="font-bold">Webschema</span>
                   </p>
                   <p>&copy; {new Date().getFullYear()} IPSUM Store. All rights reserved.</p>
                 </div>
