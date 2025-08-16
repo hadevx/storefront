@@ -1,5 +1,6 @@
 import {
   ShoppingBasket,
+  ShoppingCart,
   Menu,
   X,
   Search as SearchIcon,
@@ -79,6 +80,7 @@ function Header({ onSearch }) {
 
   return (
     <>
+      {/* Top banner */}
       {storeStatus?.[0]?.banner?.trim() && (
         <div className="bg-black text-white text-center py-2 px-4 text-sm lg:text-base font-semibold">
           {storeStatus[0].banner}
@@ -87,7 +89,7 @@ function Header({ onSearch }) {
 
       <header className="bg-white shadow-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 ">
+          <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div className="flex items-center w-[20%]">
               <Link to="/">
@@ -96,7 +98,7 @@ function Header({ onSearch }) {
             </div>
 
             {/* Desktop nav */}
-            <nav className="hidden md:flex space-x-6 w-[40%] justify-center relative ">
+            <nav className="hidden md:flex space-x-6 w-[40%] justify-center relative">
               <Link to="/" className="text-sm font-medium hover:text-rose-600">
                 Home
               </Link>
@@ -170,8 +172,8 @@ function Header({ onSearch }) {
               </Link>
             </nav>
 
-            {/* Search */}
-            <div className="hidden md:flex flex-1 mx-4 flex-col relative ">
+            {/* Desktop search */}
+            <div className="hidden md:flex flex-1 mx-4 flex-col relative">
               <div className="relative w-full">
                 <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                 <input
@@ -191,8 +193,8 @@ function Header({ onSearch }) {
               </div>
             </div>
 
-            {/* User & Cart */}
-            <div className="hidden md:flex items-center space-x-6  justify-end ">
+            {/* Desktop user & cart */}
+            <div className="hidden md:flex items-center space-x-6 justify-end">
               {userInfo ? (
                 <Link
                   to="/profile"
@@ -209,25 +211,53 @@ function Header({ onSearch }) {
               )}
               <Link
                 to="/cart"
-                className="relative flex items-center text-gray-700 hover:text-rose-600">
-                <ShoppingBasket strokeWidth={1} size={24} />
+                className="relative flex items-center text-black hover:text-rose-500">
+                <ShoppingCart strokeWidth={2} size={24} />
                 {cartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-rose-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  <span className="absolute -top-2 -right-2 bg-rose-500 text-white text-base rounded-full h-5 w-5 flex items-center justify-center">
                     {cartCount}
                   </span>
                 )}
               </Link>
             </div>
 
-            {/* Mobile toggle */}
-            <button
-              onClick={handleClick}
-              className="md:hidden text-gray-700 hover:text-rose-600 p-2 rounded-md z-50 bg-white">
-              {clicked ? <X size={28} /> : <Menu size={28} />}
-            </button>
+            {/* Mobile user & cart (next to hamburger) */}
+            <div className="flex items-center space-x-3 md:hidden">
+              {userInfo ? (
+                <Link
+                  to="/profile"
+                  className="text-gray-700 hover:text-rose-600 flex items-center gap-1">
+                  <UserIconSvg className="h-5 w-5" />
+                  {userInfo.name}
+                </Link>
+              ) : (
+                <Link
+                  to="/login"
+                  className="bg-zinc-900 px-3 py-1.5 hover:opacity-80 text-white rounded-lg text-sm">
+                  Login
+                </Link>
+              )}
+              <Link
+                to="/cart"
+                className="relative flex items-center text-black hover:text-rose-500">
+                <ShoppingCart strokeWidth={2} size={22} />
+                {cartCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-rose-500 text-white text-base rounded-full h-5 w-5 flex items-center justify-center">
+                    {cartCount}
+                  </span>
+                )}
+              </Link>
+
+              {/* Mobile toggle (hamburger) */}
+              <button
+                onClick={handleClick}
+                className="text-gray-700 hover:text-rose-600 p-2 rounded-md z-50 bg-white">
+                {clicked ? <X size={28} /> : <Menu size={28} />}
+              </button>
+            </div>
           </div>
 
-          {/* Mobile menu */}
+          {/* Mobile menu drawer */}
           <AnimatePresence>
             {clicked && (
               <motion.nav
@@ -246,15 +276,11 @@ function Header({ onSearch }) {
                   Home
                 </Link>
 
-                <Link to="/cart" onClick={() => setClicked(false)} className="py-2">
-                  Cart ({cartCount})
-                </Link>
-
                 {/* Mobile Category accordion */}
-                <div className="">
+                <div>
                   <button
                     onClick={() => setExpandedMobileCat((prev) => (prev === "all" ? null : "all"))}
-                    className="flex items-center  hover:text-rose-500 gap-2">
+                    className="flex items-center hover:text-rose-500 gap-2">
                     Categories
                     <ChevronDown
                       size={16}
@@ -325,14 +351,7 @@ function Header({ onSearch }) {
                   />
                 </div>
 
-                {/* User */}
-                <Link
-                  to="/profile"
-                  className="flex items-center space-x-2 py-2 border-t border-zinc-600 hover:text-rose-400">
-                  <UserIconSvg className="h-5 w-5" />
-                  <span>{userInfo ? userInfo.name : "Account"}</span>
-                </Link>
-
+                {/* Footer inside mobile menu */}
                 <div className="mt-auto text-xs text-zinc-400 text-center">
                   <p>
                     Designed by <span className="font-bold">Webschema</span>

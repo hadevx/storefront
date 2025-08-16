@@ -17,6 +17,9 @@ import PaymentCallback from "./pages/payment/PaymentCallback";
 import AllProducts from "./pages/product/AllProducts";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import About from "./pages/about/About";
+import Contact from "./pages/contact/Contact";
+
 function App() {
   const userInfo = useSelector((state) => state.auth.userInfo);
   const { pathname } = useLocation();
@@ -37,6 +40,8 @@ function App() {
       <Route path="/order/:orderId" element={<PrivateRoute element={<Order />} />} />
       <Route path="/address" element={<PrivateRoute element={<Address />} />} />
       <Route path="/profile" element={<PrivateRoute element={<Profile />} />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/contact" element={<Contact />} />
     </Routes>
   );
 }

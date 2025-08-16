@@ -104,7 +104,7 @@ function Cart() {
 
   return (
     <Layout>
-      <div className="px-4 lg:px-52 mt-10 lg:mt-20 min-h-screen flex gap-5 lg:gap-10 flex-col lg:flex-row lg:justify-between">
+      <div className="px-4 lg:px-52   mt-10 lg:mt-20 min-h-screen flex gap-5 lg:gap-10 flex-col lg:flex-row lg:justify-between">
         {/* Cart Table Section */}
         <div className="w-full lg:w-[1000px]">
           <h1 className="font-bold text-3xl mb-5">Cart</h1>
@@ -113,7 +113,7 @@ function Cart() {
           {cartItems?.length === 0 ? (
             <Message dismiss={false}>Your cart is empty</Message>
           ) : (
-            <table className="min-w-full">
+            <table className="min-w-full overflow-x-scroll">
               <thead>
                 <tr>
                   <th className="px-2 lg:px-4 py-2 border-b border-gray-300 text-left text-sm font-extrabold text-gray-600">
@@ -131,8 +131,8 @@ function Cart() {
                   <th className="px-2 lg:px-4 py-2 border-b border-gray-300 text-left text-sm font-extrabold text-gray-600">
                     Total
                   </th>
-                  <th className="px-2 lg:px-4 py-2 border-b border-gray-300"></th>
-                  <th className="px-2 lg:px-4 py-2 border-b border-gray-300"></th>
+                  <th className="px-2 lg:px-4 py-2 lg:border-b lg:border-gray-300"></th>
+                  {/* <th className="px-2 lg:px-4 py-2 border-b border-gray-300"></th> */}
                 </tr>
               </thead>
               <tbody>
@@ -160,7 +160,7 @@ function Cart() {
                     </td>
 
                     {/* Quantity Selector */}
-                    <td className="px-2 lg:px-4 py-2 border-b border-gray-300">
+                    <td className=" lg:px-4 py-2 border-b border-gray-300">
                       <select
                         value={item.qty}
                         onChange={(e) => handleChange(e, item)}
@@ -179,7 +179,7 @@ function Cart() {
                     </td>
 
                     {/* Remove Button */}
-                    <td className="px-4 py-2 border-b border-gray-300">
+                    <td className="lg:px-4 py-2 lg:border-b lg:border-gray-300">
                       <button
                         onClick={() => handleRemove(item._id)}
                         className="text-black transition-all duration-300 hover:bg-zinc-200 hover:text-red-500 p-2 rounded-lg">
