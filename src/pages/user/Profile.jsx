@@ -22,6 +22,7 @@ import Message from "../../components/Message.jsx";
 import clsx from "clsx";
 import { Button, Prompt } from "@medusajs/ui";
 import { Tooltip } from "@medusajs/ui";
+import AddressModal from "../address/AddressModal.jsx";
 
 function Profile() {
   const [clickEditPersonal, setClickEditPersonal] = useState(false);
@@ -59,6 +60,7 @@ function Profile() {
   //API get my orders
   const { data: myorders } = useGetMyOrdersQuery();
   //6899b5fdeba95344aa21bced
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   //API update address
   const [updateAddress, { isLoading: loadingAddress }] = useUpdateAddressMutation();
@@ -337,12 +339,21 @@ function Profile() {
               </motion.div>
             ) : (
               <>
-                <Link
+                {/*      <Link
                   to="/address"
                   className="flex hover:bg-zinc-200/5 cursor-pointer items-center gap-5 border bg-zinc-200/10 p-7 drop-shadow-lg shadow rounded-lg">
                   <h1 className="font-extrabold text-xl ">Add your Address</h1>
                   <HousePlus />
-                </Link>
+                </Link> */}
+
+                <button
+                  onClick={() => setIsModalOpen(true)}
+                  className="flex hover:bg-zinc-200/5 cursor-pointer items-center gap-5 border bg-zinc-200/10 p-7 drop-shadow-lg shadow rounded-lg">
+                  <h1 className="font-extrabold text-xl ">Add your Address</h1>
+                  <HousePlus />
+                </button>
+
+                <AddressModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
               </>
             )}
           </motion.div>

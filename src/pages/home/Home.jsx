@@ -10,7 +10,7 @@ import Product from "../../components/Product";
 import ProductCategorySection from "../../components/ProductCategorySection";
 import Loader from "../../components/Loader";
 import { Link } from "react-router-dom";
-import hero3 from "../../assets/images/hero3.jpg";
+import hero3 from "../../assets/images/hero3.webp";
 import { Facebook, Instagram, Twitter, Linkedin } from "lucide-react";
 
 function Home() {
