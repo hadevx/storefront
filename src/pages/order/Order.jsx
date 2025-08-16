@@ -32,7 +32,7 @@ const Order = () => {
   };
   return (
     <Layout>
-      <div className="container mx-auto p-4  min-h-screen">
+      <div className="container mt-5 mx-auto p-4  min-h-screen">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl font-bold mb-6 text-gray-800">
             Order placed, Thank you &hearts;
@@ -40,14 +40,14 @@ const Order = () => {
           <div className="bg-white rounded-lg shadow border p-6 mb-6">
             <div className="flex  justify-between items-center mb-4">
               <div>
-                <h2 className="lg:text-xl lg:flex lg:items-center lg:gap-2 font-semibold text-gray-800">
-                  Order #{order?._id} <Copy content={order?._id} />
+                <h2 className="text-sm lg:text-xl lg:flex lg:items-center lg:gap-2 font-semibold text-gray-800">
+                  Id #{order?._id} <Copy content={order?._id} />
                 </h2>
                 <p className="text-sm text-gray-600">
                   Placed on {order?.createdAt?.substring(0, 10)}
                 </p>
               </div>
-              <span className="px-3 py-1  rounded-full text-sm font-medium">
+              <span className="px-3 py-1  rounded-full text-xs font-medium">
                 {order?.isDelivered ? (
                   <Badge variant="success">
                     Delivered on {order?.deliveredAt?.substring(0, 10)}
@@ -60,7 +60,7 @@ const Order = () => {
               </span>
             </div>
             <div className="mb-6">
-              <h3 className="text-lg font-semibold mb-2">Products</h3>
+              {/* <h3 className="text-lg font-semibold mb-2">Products</h3> */}
               <table className="w-full">
                 <thead>
                   <tr className="border-b">
@@ -72,7 +72,7 @@ const Order = () => {
                 </thead>
                 <tbody>
                   {order?.orderItems.map((item) => (
-                    <tr key={item._id} className="border-b">
+                    <tr key={item._id} className="border-b text-sm">
                       <td className="py-2">{item.name}</td>
                       <td className="text-center py-2">{item.qty}</td>
                       <td className="text-right py-2">{item.price.toFixed(3)} KD</td>
