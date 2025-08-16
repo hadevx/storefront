@@ -39,7 +39,7 @@ function Footer() {
           <motion.h1 variants={childVariant}>IPSUM</motion.h1>
           <motion.div variants={childVariant} className="text-gray-200 flex gap-2 items-center">
             Designed by{" "}
-            <Link className="font-bold flex gap-2 font-mono">
+            <Link to="https://ws-opal-alpha.vercel.app/" className="font-bold flex gap-2 font-mono">
               <Tooltip content="@WebSchema" className="bg-white px-2 py-1 text-sm">
                 <img src={logo2} alt="" className="w-5 " />
               </Tooltip>

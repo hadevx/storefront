@@ -54,39 +54,50 @@ function Home() {
   return (
     <>
       <Layout>
-        <div className=" h-[320px] px-0 lg:px-10  lg:h-[500px]  xl:h-[800px] ">
+        <div className="h-[320px] px-0 lg:px-10 lg:h-[500px] xl:h-[800px]">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0, transition: { duration: 1 } }}
-            className="relative shadow-2xl  h-full object-cover inset-0 bg-top lg:rounded-2xl overflow-hidden"
-            style={{ backgroundImage: `url(${hero3})`, backgroundSize: "cover" }}>
+            className="relative shadow-2xl h-full bg-top lg:rounded-2xl overflow-hidden"
+            style={{
+              backgroundImage: `url(${hero3})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}>
+            {/* Dark gradient overlay for better readability */}
+            <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent"></div>
+
+            {/* Content */}
             <motion.div
               initial="hidden"
               animate="visible"
               variants={containerVariants}
-              className="absolute flex lg:w-[700px] flex-col items-center justify-center gap-3 lg:gap-1 bg-gradient-to-r    left-0 top-0 bottom-0  py-4  lg:p-24 ">
+              className="relative z-10 flex flex-col items-center lg:items-start justify-center h-full px-6 lg:px-20">
               <motion.h1
                 variants={itemVariants}
-                className="text-xl  text-violet-950/80 lg:text-5xl font-bold text-center font-[Poppins] w-[150px] lg:w-[350px]">
+                className="text-2xl lg:text-5xl font-bold text-white text-center lg:text-left max-w-lg leading-tight drop-shadow-lg">
                 The Best All-in-one store for you
               </motion.h1>
+
               <motion.p
                 variants={itemVariants}
-                className="lg:mt-5 w-1/2 text-center text-violet-950/80 lg:text-2xl">
+                className="mt-3 lg:mt-5 text-sm lg:text-xl text-gray-200 text-center lg:text-left max-w-md">
                 Everything you'll ever need
               </motion.p>
-              <motion.div variants={itemVariants} whileTap={{ scale: 0.99 }}>
+
+              <motion.div variants={itemVariants} whileTap={{ scale: 0.97 }}>
                 <a
                   href="#products"
-                  className="lg:mt-5 flex items-center gap-2 bg-gradient-to-t text-md  from-zinc-900 to-zinc-700 hover:bg-gradient-to-b text-white px-3 py-2 lg:p-4 text-xs lg:text-lg rounded-lg font-semibold hover:bg-gray-800 drop-shadow-lg">
-                  Start Shopping <ShoppingBag />
+                  className="mt-5 inline-flex items-center gap-2 bg-gradient-to-t from-zinc-900 to-zinc-700 hover:from-zinc-800 hover:to-zinc-600 text-white px-5 py-3 lg:px-7 lg:py-4 text-sm lg:text-lg rounded-xl font-semibold shadow-lg transition-all duration-300">
+                  Start Shopping <ShoppingBag className="w-5 h-5" />
                 </a>
               </motion.div>
             </motion.div>
           </motion.div>
         </div>
-        <div id="products" className="px-2 py-10 lg:p-28 ">
-          <h1 className="text-4xl font-semibold mb-10">Latest products:</h1>
+
+        <div id="products" className="px-4 lg:px-28 py-12">
+          <h2 className="text-4xl font-semibold mb-10 text-gray-900">Latest Products</h2>
           {isLoading ? (
             <Loader />
           ) : (
@@ -95,12 +106,12 @@ function Home() {
               whileInView="visible"
               viewport={{ once: true, amount: 0.3 }}
               variants={containerVariants}
-              className=" flex flex-wrap justify-start lg:items-center  gap-6  lg:gap-7 ">
+              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 lg:gap-8">
               {products?.map((product) => (
                 <motion.div
-                  variants={itemVariants}
                   key={product._id}
-                  className="w-[210px] md:min-w-[250px] flex-grow rounded-lg">
+                  variants={itemVariants}
+                  className="bg-white rounded-xl  overflow-hidden">
                   <Product product={product} categoryTree={categoryTree} />
                 </motion.div>
               ))}

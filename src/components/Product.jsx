@@ -7,7 +7,6 @@ import { useGetDiscountStatusQuery } from "../redux/queries/productApi";
 
 const findCategoryNameById = (id, nodes) => {
   if (!id || !Array.isArray(nodes)) return null;
-
   for (const node of nodes) {
     if (String(node._id) === String(id)) return node.name;
     if (node.children) {
@@ -23,16 +22,13 @@ function Product({ product, categoryTree }) {
   const cartItems = useSelector((state) => state.cart.cartItems);
   const { data: discountStatus } = useGetDiscountStatusQuery();
 
-  console.log(product);
   const oldPrice = product.price;
   let newPrice = oldPrice;
 
   if (discountStatus && discountStatus.length > 0) {
-    // Find a discount where category includes 'all' or the product category
     const applicableDiscount = discountStatus.find((d) =>
       d.category.includes(findCategoryNameById(product.category, categoryTree || []))
     );
-    console.log(applicableDiscount);
     if (applicableDiscount) {
       newPrice = oldPrice - oldPrice * applicableDiscount.discountBy;
     }
@@ -51,90 +47,55 @@ function Product({ product, categoryTree }) {
     toast.success(`${product.name} added to cart`, { position: "top-center" });
   };
 
-  console.log(findCategoryNameById(product.category, categoryTree));
-
-  /*   function dis(item) {
-    if (Array.isArray(discountStatus?.category)) {
-      if (discountStatus?.category.includes(findCategoryNameById(item.category, categoryTree))) {
-        const oldPrice = item.price;
-        const newPrice = oldPrice - oldPrice * discountStatus.discountBy;
-        return { oldPrice, newPrice };
-      }
-    }
-  }
-
-  const { oldPrice, newPrice } = dis(product);
- */
-  /*   const oldPrice = product.price;
-  let newPrice = oldPrice;
-
-  if (discountStatus && discountStatus.length > 0) {
-    // Find a discount where category includes 'all' or the product category
-    const applicableDiscount = discountStatus.find((d) =>
-      d.category.includes(findCategoryNameById(product.category, categoryTree || []))
-    );
-    console.log(applicableDiscount);
-    if (applicableDiscount) {
-      newPrice = oldPrice - oldPrice * applicableDiscount.discountBy;
-    }
-  }
- */
-  // Get category name for display
   const categoryName = findCategoryNameById(product.category, categoryTree || []) || "";
 
   return (
-    <>
-      <Link to={`/products/${product._id}`}>
-        <div className="bg-gray-50 relative rounded-lg border hover:shadow-md">
-          {/*    {discountStatus &&
-            (discountStatus.category === "all" ||
-              (Array.isArray(discountStatus.category) &&
-                discountStatus.category.includes(
-                  findCategoryNameById(product.category, categoryTree)
-                ))) && (
-              <p className="px-2 z-20 absolute top-2 left-2 py-1 bg-blue-500 w-[100px] text-white rounded-full">
-                offer {discountStatus.discountBy * 100}%
-              </p>
-            )} */}
-          <img
-            className="w-full rounded-lg shadow h-[300px] object-cover drop-shadow-2xl"
-            src={product?.image}
-            alt={product.name}
-          />
-        </div>
+    <div className="flex flex-col bg-white rounded-2xl  hover:shadow-xl  duration-300 overflow-hidden">
+      <Link to={`/products/${product._id}`} className="relative group">
+        {newPrice < oldPrice && (
+          <span className="absolute top-3 left-3 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full z-10">
+            -{(((oldPrice - newPrice) / oldPrice) * 100).toFixed(0)}%
+          </span>
+        )}
+        <img
+          src={product?.image}
+          alt={product.name}
+          className="w-full h-60 sm:h-64 md:h-56 lg:h-60 object-cover group-hover:scale-105 transition-transform duration-300"
+        />
       </Link>
-      <div className="flex py-3 justify-between items-center">
-        <div className="flex flex-col w-[100px] lg:w-[130px] justify-start ">
-          <h2 className="lg:text-lg font-semibold text-gray-800 overflow-hidden whitespace-nowrap truncate">
-            {product.name}
-          </h2>
-          <p className="text-sm text-gray-500 italic mb-1 truncate">{categoryName}</p>
-          <p className="text-lg text-gray-500 font-semibold mt-2 ">
-            {newPrice < oldPrice ? (
-              <>
-                <span style={{ textDecoration: "line-through", color: "gray" }}>
-                  {oldPrice.toFixed(3)} KD
-                </span>{" "}
-                <span className="text-green-600 font-bold">{newPrice.toFixed(3)} KD</span>
-              </>
-            ) : (
-              <span style={{ color: "black", fontWeight: "bold" }}>{oldPrice.toFixed(3)} KD</span>
-            )}
-          </p>
+
+      <div className="p-4 flex flex-col justify-between h-full">
+        <div>
+          <p className="text-gray-500 text-sm mb-1 truncate">{categoryName}</p>
+          <h2 className="text-gray-900 font-semibold text-lg truncate">{product.name}</h2>
         </div>
-        <button
-          disabled={product.countInStock === 0}
-          className={clsx(
-            "bg-gradient-to-t text-md hover:bg-gradient-to-b drop-shadow-lg rounded-lg text-white py-2 px-3",
-            product?.countInStock === 0
-              ? "bg-zinc-300 cursor-not-allowed"
-              : "bg-gradient-to-t from-zinc-900 to-zinc-700 hover:bg-gradient-to-b"
-          )}
-          onClick={handleAddToCart}>
-          {product?.countInStock === 0 ? "Out of stock" : "Add to cart"}
-        </button>
+
+        <div className="mt-3 flex items-center justify-between">
+          <div className="text-lg">
+            {newPrice < oldPrice ? (
+              <div className="flex flex-col">
+                <span className="text-gray-400 line-through text-sm">{oldPrice.toFixed(3)} KD</span>
+                <span className="text-green-600 font-bold">{newPrice.toFixed(3)} KD</span>
+              </div>
+            ) : (
+              <span className="text-black font-bold">{oldPrice.toFixed(3)} KD</span>
+            )}
+          </div>
+
+          <button
+            onClick={handleAddToCart}
+            disabled={product.countInStock === 0}
+            className={clsx(
+              "ml-2 px-3 py-2 rounded-lg font-semibold text-white text-xs lg:text-sm transition-colors duration-300",
+              product.countInStock === 0
+                ? "bg-gray-300 cursor-not-allowed"
+                : "bg-gradient-to-t from-zinc-900 to-zinc-700 hover:from-zinc-800 hover:to-zinc-600"
+            )}>
+            {product.countInStock === 0 ? "Out of stock" : "Add to Cart"}
+          </button>
+        </div>
       </div>
-    </>
+    </div>
   );
 }
 
