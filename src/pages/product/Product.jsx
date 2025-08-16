@@ -84,15 +84,15 @@ function Product() {
         Go Back
       </Link> */}
 
-      <div className="container mx-auto flex gap-5  min-h-screen items-center flex-col  lg:flex-row justify-center   ">
+      <div className="lg:container sm:px-2 lg:mx-auto flex  min-h-screen items-center flex-col  sm:flex-row justify-center   ">
         {isLoading ? (
           <Loader />
         ) : (
           <>
-            <div className=" w-[400px] lg:w-1/2 lg:h-[700px] ">
-              <img src={product?.image} className="w-full h-full drop-shadow-2xl object-cover" />
+            <div className=" w-[400px] sm:w-2/3 sm:h-[700px] ">
+              <img src={product?.image} className="w-full h-full  object-cover" />
             </div>
-            <div className="bg-zinc-200/50 relative justify-center items-center rounded-2xl shadow-md p-10 lg:p-20 w-full lg:w-1/2 h-[700px]">
+            <div className="relative  justify-center items-center rounded-2xl  p-10 lg:p-20 w-full sm:w-1/2 lg:w-1/2 h-[700px]">
               {product?.category === discountStatus?.category && (
                 <p className="absolute top-0 lg:top-5 bg-blue-500 text-white px-2 py-1 rounded-full">
                   {discountStatus?.discountBy * 100}% offer
@@ -131,9 +131,9 @@ function Product() {
                   product?.countInStock <= 5 &&
                   `Only ${product.countInStock} left in stock`}
               </p>
-              <p className="font-bold text-3xl mb-10">
+              <p className="font-bold text-3xl mb-10 ">
                 {newPrice < oldPrice ? (
-                  <p>
+                  <p className="flex flex-col">
                     <span style={{ textDecoration: "line-through", color: "gray" }}>
                       {oldPrice.toFixed(3)} KD
                     </span>{" "}

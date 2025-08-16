@@ -71,7 +71,7 @@ function Product({ product, categoryTree }) {
         </div>
 
         <div className="mt-3 flex items-center justify-between">
-          <div className="text-lg">
+          <div className="text-sm sm:text-lg">
             {newPrice < oldPrice ? (
               <div className="flex flex-col">
                 <span className="text-gray-400 line-through text-sm">{oldPrice.toFixed(3)} KD</span>
