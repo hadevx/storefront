@@ -149,8 +149,8 @@ function Profile() {
               className="flex items-center justify-between border bg-zinc-200/10 p-5 lg:p-7 drop-shadow-lg shadow rounded-lg">
               <div className="flex items-center gap-2 lg:gap-5">
                 <div className=" rounded-[50%] hover:from-rose-500/80 hover:to-rose-600 bg-gradient-to-r shadow-lg drop-shadow-lg font-bold text-md lg:text-3xl from-gray-500 to-gray-700 text-white size-[40px] lg:size-[100px] flex justify-center items-center">
-                  {userInfo?.name.charAt(0).toUpperCase()}
-                  {userInfo?.name.charAt(userInfo?.name.length - 1).toUpperCase()}
+                  {userInfo?.name?.charAt(0).toUpperCase()}
+                  {userInfo?.name?.charAt(userInfo?.name?.length - 1).toUpperCase()}
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
