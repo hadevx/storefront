@@ -101,9 +101,9 @@ const Order = () => {
             <p className="font-medium">{userInfo?.name}</p>
             <p className="text-sm text-gray-600">{userInfo?.email}</p>
             <p className="text-sm text-gray-600 mt-2">
-              {order?.shippingAddress.province},{order?.shippingAddress.city},
-              {order?.shippingAddress.block},{order?.shippingAddress.street},
-              {order?.shippingAddress.house}
+              {order?.shippingAddress?.governorate},{order?.shippingAddress?.city},
+              {order?.shippingAddress?.block},{order?.shippingAddress?.street},
+              {order?.shippingAddress?.house}
             </p>
           </div>
           <div className="flex justify-between items-center">
