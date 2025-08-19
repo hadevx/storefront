@@ -42,6 +42,14 @@ export const orderApi = apiSlice.injectEndpoints({
         body: paymentData,
       }),
     }),
+    // redux/queries/orderApi.js
+    checkStock: builder.mutation({
+      query: (orderItems) => ({
+        url: "/api/orders/check-stock",
+        method: "POST",
+        body: { orderItems },
+      }),
+    }),
   }),
 });
 
@@ -52,4 +60,5 @@ export const {
   usePayOrderMutation,
   useGetPayPalClientIdQuery,
   useCreateTapPaymentMutation, // export new hook
+  useCheckStockMutation,
 } = orderApi;

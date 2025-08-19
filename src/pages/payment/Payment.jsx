@@ -9,6 +9,7 @@ import {
   useCreateOrderMutation,
   usePayOrderMutation,
   useCreateTapPaymentMutation,
+  useCheckStockMutation,
 } from "../../redux/queries/orderApi";
 import { useUpdateStockMutation, useGetDeliveryStatusQuery } from "../../redux/queries/productApi";
 import { clearCart } from "../../redux/slices/cartSlice";
@@ -17,7 +18,7 @@ import { toast } from "react-toastify";
 import { PayPalButtons, FUNDING } from "@paypal/react-paypal-js";
 
 function Payment() {
-  const [paymentMethod, setPaymentMethod] = useState("cash");
+  const [paymentMethod, setPaymentMethod] = useState("Cash");
   const dispatch = useDispatch();
   const navigate = useNavigate();
   // Inside your component
@@ -29,7 +30,7 @@ function Payment() {
   const { data: userAddress, refetch, isLoading } = useGetAddressQuery(userInfo._id);
 
   const [createOrder, { isLoading: loadingCreateOrder }] = useCreateOrderMutation();
-
+  const [checkStock] = useCheckStockMutation();
   const { data: deliveryStatus } = useGetDeliveryStatusQuery();
 
   const handlePaymentChange = (e) => {
@@ -43,9 +44,27 @@ function Payment() {
   };
   const totalAmount = totalCost(); // or calculated properly before using in handleApprove
 
+  const handleCheckStock = async () => {
+    const result = await checkStock(cartItems).unwrap();
+    console.log(result);
+    if (!result.success) {
+      toast.error(
+        `These products are unavailable: ${result.outOfStockItems
+          .map((i) => i.name + " (" + i.reason + ")")
+          .join(", ")}`
+      );
+      return false;
+    }
+
+    return true;
+  };
   //PAY with cash
   const handleCashPayment = async () => {
     try {
+      // 1️⃣ Check stock first
+      const isStockAvailable = await handleCheckStock();
+      if (!isStockAvailable) return; // Stop if any product is out of stock
+
       const res = await createOrder({
         orderItems: cartItems,
         shippingAddress: userAddress,
