@@ -19,15 +19,15 @@ export default function ProductCategorySection() {
   const { data: categoryTree } = useGetCategoriesTreeQuery();
 
   const uniqueCategoryIds = [...new Set(products?.map((product) => product?.category))];
-  const mainCategoryIds = uniqueCategoryIds.filter((id) =>
+  const mainCategoryIds = uniqueCategoryIds?.filter((id) =>
     categoryTree?.some((cat) => String(cat._id) === String(id))
   );
 
-  const cat = mainCategoryIds.map((id) => {
+  const cat = mainCategoryIds?.map((id) => {
     const name = findCategoryNameById(id, categoryTree || []) || "Unknown";
     const label = name.charAt(0).toUpperCase() + name.slice(1);
 
-    const categoryProducts = products.filter((p) => String(p.category) === String(id));
+    const categoryProducts = products?.filter((p) => String(p.category) === String(id));
     const count = categoryProducts.length;
 
     // Use the first product image as category image
@@ -51,7 +51,7 @@ export default function ProductCategorySection() {
           Shop by Category
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-          {cat.map((category) => (
+          {cat?.map((category) => (
             <motion.div
               key={category.id}
               variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>
