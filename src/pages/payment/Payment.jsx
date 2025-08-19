@@ -9,7 +9,6 @@ import {
   useCreateOrderMutation,
   usePayOrderMutation,
   useCreateTapPaymentMutation,
-  useCheckStockMutation,
 } from "../../redux/queries/orderApi";
 import {
   useUpdateStockMutation,
@@ -30,11 +29,11 @@ function Payment() {
   const cartItems = useSelector((state) => state.cart.cartItems);
 
   const [updateStock] = useUpdateStockMutation();
-  const [fetchProductsByIds] = useFetchProductsByIdsMutation();
+  const [fetchProductsByIds, { isLoading: loadingCheck }] = useFetchProductsByIdsMutation();
   const { data: userAddress, refetch, isLoading } = useGetAddressQuery(userInfo._id);
 
   const [createOrder, { isLoading: loadingCreateOrder }] = useCreateOrderMutation();
-  const [checkStock] = useCheckStockMutation();
+
   const { data: deliveryStatus } = useGetDeliveryStatusQuery();
 
   const handlePaymentChange = (e) => {
@@ -48,20 +47,6 @@ function Payment() {
   };
   const totalAmount = totalCost(); // or calculated properly before using in handleApprove
 
-  /* const handleCheckStock = async () => {
-    const result = await checkStock(cartItems).unwrap();
-    console.log(result);
-    if (!result.success) {
-      toast.error(
-        `These products are unavailable: ${result.outOfStockItems
-          .map((i) => i.name + " (" + i.reason + ")")
-          .join(", ")}`
-      );
-      return false;
-    }
-
-    return true;
-  }; */
   //PAY with cash
   const handleCashPayment = async () => {
     try {
@@ -285,15 +270,19 @@ function Payment() {
 
               {paymentMethod === "cash" && (
                 <button
-                  disabled={loadingCreateOrder}
+                  disabled={loadingCreateOrder || loadingCheck}
                   onClick={handleCashPayment}
                   className={clsx(
-                    "w-full mt-5 py-4 flex justify-center  text-white font-bold transition-all duration-300 shadow",
-                    loadingCreateOrder
-                      ? "bg-gray-300"
-                      : "bg-zinc-900 hover:bg-zinc-700 transition-all duration-300"
+                    "w-full mt-5 py-4 flex justify-center  font-bold transition-all duration-300 shadow",
+                    loadingCreateOrder || loadingCheck
+                      ? "bg-gray-300 text-black"
+                      : "bg-zinc-900 hover:bg-zinc-700 text-white  transition-all duration-300"
                   )}>
-                  {loadingCreateOrder ? <Spinner className="border-t-black " /> : "Place Order"}
+                  {loadingCheck
+                    ? "Checking stock..."
+                    : loadingCreateOrder
+                    ? "Placing order..."
+                    : "Place Order"}
                 </button>
               )}
             </div>
