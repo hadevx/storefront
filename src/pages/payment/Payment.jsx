@@ -11,7 +11,11 @@ import {
   useCreateTapPaymentMutation,
   useCheckStockMutation,
 } from "../../redux/queries/orderApi";
-import { useUpdateStockMutation, useGetDeliveryStatusQuery } from "../../redux/queries/productApi";
+import {
+  useUpdateStockMutation,
+  useGetDeliveryStatusQuery,
+  useFetchProductsByIdsMutation,
+} from "../../redux/queries/productApi";
 import { clearCart } from "../../redux/slices/cartSlice";
 import clsx from "clsx";
 import { toast } from "react-toastify";
@@ -26,7 +30,7 @@ function Payment() {
   const cartItems = useSelector((state) => state.cart.cartItems);
 
   const [updateStock] = useUpdateStockMutation();
-
+  const [fetchProductsByIds] = useFetchProductsByIdsMutation();
   const { data: userAddress, refetch, isLoading } = useGetAddressQuery(userInfo._id);
 
   const [createOrder, { isLoading: loadingCreateOrder }] = useCreateOrderMutation();
@@ -44,7 +48,7 @@ function Payment() {
   };
   const totalAmount = totalCost(); // or calculated properly before using in handleApprove
 
-  const handleCheckStock = async () => {
+  /* const handleCheckStock = async () => {
     const result = await checkStock(cartItems).unwrap();
     console.log(result);
     if (!result.success) {
@@ -57,13 +61,26 @@ function Payment() {
     }
 
     return true;
-  };
+  }; */
   //PAY with cash
   const handleCashPayment = async () => {
     try {
-      // 1️⃣ Check stock first
-      const isStockAvailable = await handleCheckStock();
-      if (!isStockAvailable) return; // Stop if any product is out of stock
+      // 1️⃣ Get latest product data
+      const productIds = cartItems.map((item) => item._id);
+      const latestProducts = await fetchProductsByIds(productIds).unwrap();
+
+      // 2️⃣ Check stock
+      const outOfStockItems = cartItems.filter((item) => {
+        const product = latestProducts.find((p) => p._id === item._id);
+        return !product || item.qty > product.countInStock;
+      });
+
+      if (outOfStockItems.length > 0) {
+        toast.error(
+          `Some products are out of stock: ${outOfStockItems.map((i) => i.name).join(", ")}`
+        );
+        return;
+      }
 
       const res = await createOrder({
         orderItems: cartItems,

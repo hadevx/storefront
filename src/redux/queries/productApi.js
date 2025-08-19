@@ -49,6 +49,13 @@ export const productApi = apiSlice.injectEndpoints({
         url: "/api/category/tree",
       }),
     }),
+    fetchProductsByIds: builder.mutation({
+      query: (productIds) => ({
+        url: "/api/products/fetch-by-ids",
+        method: "POST",
+        body: { productIds },
+      }),
+    }),
   }),
 });
 
@@ -62,4 +69,5 @@ export const {
   useGetLatestProductsQuery,
   useGetCategoriesTreeQuery,
   useGetAllProductsQuery,
+  useFetchProductsByIdsMutation,
 } = productApi;
