@@ -1,4 +1,4 @@
-import { useGetProductsQuery, useGetCategoriesTreeQuery } from "../redux/queries/productApi";
+import { useGetAllProductsQuery, useGetCategoriesTreeQuery } from "../redux/queries/productApi";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
@@ -15,7 +15,7 @@ const findCategoryNameById = (id, nodes) => {
 };
 
 export default function ProductCategorySection() {
-  const { data: products, isLoading, error } = useGetProductsQuery();
+  const { data: products, isLoading, error } = useGetAllProductsQuery();
   const { data: categoryTree } = useGetCategoriesTreeQuery();
 
   const uniqueCategoryIds = [...new Set(products?.map((product) => product?.category))];

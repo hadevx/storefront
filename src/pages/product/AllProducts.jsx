@@ -1,11 +1,11 @@
 import Layout from "../../Layout";
 import { motion } from "framer-motion";
-import { useGetProductsQuery, useGetCategoriesTreeQuery } from "../../redux/queries/productApi";
+import { useGetAllProductsQuery, useGetCategoriesTreeQuery } from "../../redux/queries/productApi";
 import Product from "../../components/Product";
 import Loader from "../../components/Loader";
 import { useEffect } from "react";
 function AllProducts() {
-  const { data: products, isLoading } = useGetProductsQuery();
+  const { data: products, isLoading } = useGetAllProductsQuery();
   const { data: categoryTree } = useGetCategoriesTreeQuery();
 
   const containerVariants = { visible: { transition: { staggerChildren: 0.1 } } };

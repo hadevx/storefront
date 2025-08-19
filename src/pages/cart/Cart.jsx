@@ -8,7 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import { toast } from "react-toastify";
 import { useGetAddressQuery } from "../../redux/queries/userApi";
-import { useGetDeliveryStatusQuery, useGetProductsQuery } from "../../redux/queries/productApi";
+import { useGetDeliveryStatusQuery, useGetAllProductsQuery } from "../../redux/queries/productApi";
 import { Badge } from "@medusajs/ui";
 
 function Cart() {
@@ -19,7 +19,7 @@ function Cart() {
   const { data: deliveryStatus } = useGetDeliveryStatusQuery();
 
   // Fetch all products (used for validating cart items)
-  const { data: products } = useGetProductsQuery();
+  const { data: products } = useGetAllProductsQuery();
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
