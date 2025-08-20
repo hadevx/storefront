@@ -36,9 +36,9 @@ export default function ProductCategorySection() {
     return { id, label, count, image };
   });
 
-  if (isLoading) return <div>Loading...</div>;
+  /*   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading products</div>;
-  if (cat.length === 0) return null;
+  if (cat.length === 0) return null; */
 
   return (
     <motion.section className="bg-gray-50 py-16">
@@ -50,6 +50,9 @@ export default function ProductCategorySection() {
         <h2 className="text-3xl sm:text-4xl font-semibold mb-12 text-center text-gray-800">
           Shop by Category
         </h2>
+        {error && (
+          <p className="text-red-500 text-sm mt-2">Something went wrong. Please try again later.</p>
+        )}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
           {cat?.map((category) => (
             <motion.div

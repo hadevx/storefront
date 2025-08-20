@@ -93,9 +93,11 @@ function Product() {
               <img src={product?.image} className="w-full h-full  object-cover" />
             </div>
             <div className="relative flex flex-col    rounded-2xl  p-10 lg:p-20 w-full sm:w-1/2 md:w-1/2 ">
-              <p className="absolute top-0 lg:top-5 bg-blue-500 text-white px-2 py-1 rounded-full">
-                -{(((oldPrice - newPrice) / oldPrice) * 100).toFixed(0)}%
-              </p>
+              {oldPrice !== newPrice && (
+                <p className="absolute top-0 lg:top-5 bg-blue-500 text-white px-2 py-1 rounded-full">
+                  -{(((oldPrice - newPrice) / oldPrice) * 100).toFixed(0)}%
+                </p>
+              )}
 
               <h1 className="text-3xl  font-extrabold lg:mb-5">{product?.name}</h1>
               <p className="text-gray-500 mb-5 lg:mb-10 text-base lg:text-xl">

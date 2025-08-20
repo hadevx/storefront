@@ -14,7 +14,7 @@ import hero3 from "../../assets/images/hero3.webp";
 import { Facebook, Instagram, Twitter, Linkedin } from "lucide-react";
 
 function Home() {
-  const { data: products, isLoading, refetch } = useGetLatestProductsQuery();
+  const { data: products, isLoading, isError, refetch } = useGetLatestProductsQuery();
   const { data: categoryTree } = useGetCategoriesTreeQuery();
 
   const prevStockRef = useRef([]);
@@ -74,6 +74,9 @@ function Home() {
       {/* Products Section */}
       <div id="products" className="lg:px-28 py-12">
         <h2 className="text-4xl font-semibold mb-10 text-gray-900">Latest Products</h2>
+        {isError && (
+          <p className="text-red-500 text-sm mt-2">Something went wrong. Please try again later.</p>
+        )}
 
         {isLoading ? (
           <Loader />

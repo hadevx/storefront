@@ -37,7 +37,6 @@ function Profile() {
   const [cities, setCities] = useState([]);
   const [city, setCity] = useState("");
 
-  console.log(selectedProvince);
   const { id } = useParams();
 
   const dispatch = useDispatch();

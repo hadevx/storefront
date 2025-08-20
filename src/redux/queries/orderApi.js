@@ -34,14 +34,14 @@ export const orderApi = apiSlice.injectEndpoints({
       }),
       keepUnusedDataFor: 5,
     }),
-    // 🔹 NEW: Create Tap payment
+    /*     // 🔹 NEW: Create Tap payment
     createTapPayment: builder.mutation({
       query: (paymentData) => ({
         url: "/api/payment/create", // Your Tap backend endpoint
         method: "POST",
         body: paymentData,
       }),
-    }),
+    }), */
     // redux/queries/orderApi.js
     checkStock: builder.mutation({
       query: (orderItems) => ({

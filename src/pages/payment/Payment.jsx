@@ -1,53 +1,67 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Layout from "../../Layout";
 import Spinner from "../../components/Spinner";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { HandCoins, CreditCard } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useGetAddressQuery } from "../../redux/queries/userApi";
-import {
+import { useGetDeliveryStatusQuery } from "../../redux/queries/productApi";
+/* import {
   useCreateOrderMutation,
   usePayOrderMutation,
   useCreateTapPaymentMutation,
-} from "../../redux/queries/orderApi";
-import {
+} from "../../redux/queries/orderApi"; */
+/* import {
   useUpdateStockMutation,
   useGetDeliveryStatusQuery,
   useFetchProductsByIdsMutation,
-} from "../../redux/queries/productApi";
-import { clearCart } from "../../redux/slices/cartSlice";
+} from "../../redux/queries/productApi"; */
+
+// import { clearCart } from "../../redux/slices/cartSlice";
 import clsx from "clsx";
 import { toast } from "react-toastify";
 import { PayPalButtons, FUNDING } from "@paypal/react-paypal-js";
+import { usePayment } from "../../hooks/usePayment";
 
 function Payment() {
-  const [paymentMethod, setPaymentMethod] = useState("Cash");
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const [paymentMethod, setPaymentMethod] = useState("cash");
+  /*   const dispatch = useDispatch();
+  const navigate = useNavigate(); */
   // Inside your component
   const userInfo = useSelector((state) => state.auth.userInfo);
   const cartItems = useSelector((state) => state.cart.cartItems);
 
-  const [updateStock] = useUpdateStockMutation();
-  const [fetchProductsByIds, { isLoading: loadingCheck }] = useFetchProductsByIdsMutation();
-  const { data: userAddress, refetch, isLoading } = useGetAddressQuery(userInfo._id);
-
-  const [createOrder, { isLoading: loadingCreateOrder }] = useCreateOrderMutation();
-
+  const { data: userAddress, refetch, isLoading } = useGetAddressQuery(userInfo?._id);
   const { data: deliveryStatus } = useGetDeliveryStatusQuery();
+  // const [payOrder] = usePayOrderMutation();
+
+  // const [updateStock, { isLoading: loadingUpdateStock }] = useUpdateStockMutation();
+  // const [fetchProductsByIds, { isLoading: loadingCheck }] = useFetchProductsByIdsMutation();
+
+  // const [createOrder, { isLoading: loadingCreateOrder }] = useCreateOrderMutation();
 
   const handlePaymentChange = (e) => {
     setPaymentMethod(e.target.value);
   };
 
-  const totalCost = () => {
+  const {
+    totalAmount,
+    amountInUSD,
+    loadingCreateOrder,
+    loadingCheck,
+    handleCashPayment,
+    handlePayPalApprove,
+    createPayPalOrder,
+  } = usePayment(cartItems, userAddress, paymentMethod, deliveryStatus);
+
+  /* const totalCost = () => {
     const items = Number(cartItems.reduce((acc, item) => acc + item.price * item.qty, 0));
     const deliveryFee = Number(Number(deliveryStatus?.[0].shippingFee).toFixed(3));
     return items + deliveryFee;
   };
-  const totalAmount = totalCost(); // or calculated properly before using in handleApprove
+  const totalAmount = totalCost();
 
-  //PAY with cash
+  // Pay with cash
   const handleCashPayment = async () => {
     try {
       // 1️⃣ Get latest product data
@@ -88,9 +102,9 @@ function Payment() {
       toast.error(error);
     }
   };
-
+ */
   // Called when PayPal transaction is approved
-  const handleApprove = async (data, actions) => {
+  /* const handleApprove = async (data, actions) => {
     const details = await actions.order.capture();
 
     try {
@@ -114,6 +128,49 @@ function Payment() {
       toast.error("Failed to create order after PayPal payment");
     }
   };
+ */
+  /* const handleApprove = async (data, actions) => {
+    let pendingOrder;
+
+    try {
+      // 1️⃣ Create order in backend as PENDING (not paid yet)
+      pendingOrder = await createOrder({
+        orderItems: cartItems,
+        shippingAddress: userAddress,
+        paymentMethod: paymentMethod,
+        itemsPrice: cartItems.reduce((acc, item) => acc + item.price * item.qty, 0),
+        shippingPrice: deliveryStatus?.[0].shippingFee,
+        totalPrice: Number(cartItems.reduce((a, c) => a + c.price * c.qty, 0)),
+        isPaid: false,
+      }).unwrap();
+
+      // 2️⃣ Capture PayPal payment
+      const details = await actions.order.capture();
+      const transaction = details.purchase_units[0].payments.captures[0];
+
+      // 3️⃣ Mark order as PAID in backend
+      await payOrder({
+        orderId: pendingOrder._id,
+        paymentResult: {
+          id: transaction.id,
+          status: transaction.status,
+          update_time: transaction.update_time,
+          email_address: details.payer.email_address,
+        },
+      }).unwrap();
+
+      // 4️⃣ Update stock
+      await updateStock({ orderItems: cartItems }).unwrap();
+
+      // 5️⃣ Clear cart & navigate
+      dispatch(clearCart());
+      toast.success("Order created successfully");
+      navigate(`/order/${pendingOrder._id}`);
+    } catch (error) {
+      console.error("Payment/order/stock failed:", error);
+      toast.error("Something went wrong. Please contact support. Payment may have been captured.");
+    }
+  }; */
 
   /*   const totalCost = () => {
     const items = Number(cartItems.reduce((acc, item) => acc + item.price * item.qty, 0));
@@ -121,6 +178,41 @@ function Payment() {
     return items + deliveryFee;
   };
   const totalAmount = totalCost(); // or calculated properly before using in handleApprove */
+  // const [exchangeRate, setExchangeRate] = useState(3.25);
+
+  /* useEffect(() => {
+    const fetchExchangeRate = async () => {
+      try {
+        const storedData = JSON.parse(localStorage.getItem("kwdToUsdRate"));
+        const now = new Date().getTime();
+
+        // Use cached rate if it exists and is <24h old
+        if (storedData && now - storedData.timestamp < 24 * 60 * 60 * 1000) {
+          setExchangeRate(storedData.rate);
+          return;
+        }
+
+        // Otherwise fetch new rate
+        const res = await fetch("https://open.er-api.com/v6/latest/KWD");
+        const data = await res.json();
+
+        if (data?.result === "success") {
+          setExchangeRate(data.rates.USD);
+          localStorage.setItem(
+            "kwdToUsdRate",
+            JSON.stringify({ rate: data.rates.USD, timestamp: now })
+          );
+        } else {
+          toast.error("Failed to fetch exchange rate. Using cached/fallback rate.");
+        }
+      } catch (error) {
+        console.error("Failed to fetch exchange rate:", error);
+        toast.error("Using cached/fallback exchange rate.");
+      }
+    };
+
+    fetchExchangeRate();
+  }, []);
 
   function convertKWDToUSD(amountInKWD, exchangeRate) {
     if (typeof amountInKWD !== "number" || amountInKWD < 0) {
@@ -134,8 +226,7 @@ function Payment() {
     return amountInUSD;
   }
 
-  const kwTous = convertKWDToUSD(totalAmount, 3.25);
-  console.log(kwTous);
+  const kwTous = convertKWDToUSD(totalAmount, exchangeRate); */
 
   return (
     <Layout className="bg-zinc-100">
@@ -218,47 +309,10 @@ function Payment() {
                 {paymentMethod === "paypal" && (
                   <div className="mt-5">
                     <PayPalButtons
+                      disabled={loadingCheck || loadingCreateOrder}
                       fundingSource={FUNDING.CARD} // Show only card funding option
-                      /*   style={{
-                        layout: "vertical",
-                        color: "blue",
-                        shape: "pill",
-                        tagline: false,
-                        height: 40,
-                      }} */
-                      createOrder={(data, actions) => {
-                        return actions.order.create({
-                          purchase_units: [
-                            {
-                              amount: {
-                                value: Number(kwTous.toFixed(2)),
-                              },
-                            },
-                          ],
-                          application_context: {
-                            shipping_preference: "NO_SHIPPING",
-                            user_action: "PAY_NOW",
-                          },
-                          payer: {
-                            name: {
-                              given_name: userInfo?.name,
-                              surname: userInfo.name,
-                            },
-                            phone: {
-                              phone_type: "MOBILE", // or "HOME", "WORK"
-                              phone_number: {
-                                national_number: userInfo?.phone, // your user's phone number string, e.g. "12345678"
-                              },
-                            },
-                            email_address: "sb-glzmb32291307@personal.example.com",
-                            address: {
-                              country_code: "KW", // Limits billing address country to Kuwait
-                              postal_code: "00000",
-                            },
-                          },
-                        });
-                      }}
-                      onApprove={handleApprove}
+                      createOrder={createPayPalOrder(userInfo, amountInUSD)}
+                      onApprove={handlePayPalApprove}
                       onError={(err) => {
                         toast.error("PayPal payment failed");
                         console.error(err);
@@ -306,7 +360,7 @@ function Payment() {
                 </h1>
                 <h1 className="font-bold">{deliveryStatus?.[0].shippingFee.toFixed(3)} KD</h1>
                 <hr />
-                <h1 className="font-bold">{totalCost().toFixed(3)} KD</h1>
+                <h1 className="font-bold">{totalAmount.toFixed(3)} KD</h1>
               </div>
             </div>
             {cartItems.map((item) => (
