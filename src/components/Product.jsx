@@ -4,6 +4,7 @@ import { addToCart } from "../redux/slices/cartSlice";
 import { toast } from "react-toastify";
 import clsx from "clsx";
 import { useGetDiscountStatusQuery } from "../redux/queries/productApi";
+import { ShoppingCart } from "lucide-react";
 
 const findCategoryNameById = (id, nodes) => {
   if (!id || !Array.isArray(nodes)) return null;
@@ -91,7 +92,17 @@ function Product({ product, categoryTree }) {
                 ? "bg-gray-300 cursor-not-allowed"
                 : "bg-gradient-to-t from-zinc-900 to-zinc-700 hover:from-zinc-800 hover:to-zinc-600"
             )}>
-            {product.countInStock === 0 ? "Out of stock" : "Add to Cart"}
+            {product.countInStock === 0 ? (
+              "Out of stock"
+            ) : (
+              <p className="">
+                <p className="md:hidden ">
+                  {" "}
+                  <ShoppingCart />
+                </p>
+                <p className="hidden md:flex">Add to Cart</p>
+              </p>
+            )}
           </button>
         </div>
       </div>
